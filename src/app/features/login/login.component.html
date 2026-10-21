@@ -1,0 +1,55 @@
+<h2 class="text-2xl font-extrabold text-slate-900">Log in to Route Posts</h2>
+<p class="mt-1 text-sm text-slate-500">Log in and continue your social journey.</p>
+
+<form [formGroup]="loginForm" (ngSubmit)="login()" class="mt-5 space-y-3.5">
+  <div>
+    <div class="relative">
+      <span class="fa-regular fa-user pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></span>
+      <input
+        placeholder="Email or username"
+        class="w-full rounded-xl border bg-slate-50 py-3 pl-11 pr-4 text-sm text-slate-800 outline-none transition focus:bg-white border-slate-200 focus:border-[#00298d]"
+        type="text"
+        name="login"
+        formControlName="login"
+      />
+    </div>
+
+    @if (loginForm.get('login')?.invalid && loginForm.get('login')?.touched && loginForm.get('login')?.dirty) {
+      @if (loginForm.get('login')?.hasError('required')) {
+        <p class="mt-1 text-xs font-semibold text-rose-600">Email or userName is required.</p>
+      }
+    }
+  </div>
+  <div>
+    <div class="relative">
+      <span class="fa-solid fa-key pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></span>
+      <input
+        #loginPass
+        placeholder="Password"
+        class="w-full rounded-xl border bg-slate-50 py-3 pl-11 pr-4 text-sm text-slate-800 outline-none transition focus:bg-white border-slate-200 focus:border-[#00298d]"
+        type="password"
+        name="password"
+        formControlName="password"
+      />
+      <span #loginPassIcon (click)="_authService.togglePassword(loginPass, loginPassIcon)" class="fa-solid fa-eye cursor-pointer absolute right-4 top-1/2 -translate-y-1/2 text-slate-600"></span>
+    </div>
+    @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched && loginForm.get('password')?.dirty) {
+      @if (loginForm.get('password')?.hasError('required')) {
+        <p class="mt-1 text-xs font-semibold text-rose-600">Password is required.</p>
+      } @else if (loginForm.get('password')?.hasError('pattern')) {
+        <p class="mt-1 text-xs font-semibold text-rose-600">Password must be at least 8 characters and contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&).</p>
+      }
+    }
+  </div>
+  <button [disabled]="!loginForm.valid || loading()" type="submit" class="w-full rounded-xl py-3 text-base font-extrabold text-white transition disabled:opacity-60 bg-[#00298d] hover:bg-[#001f6b]">
+    Log In
+    @if (loading()) {
+      <i class="fa fa-spinner fa-spin fa-xl ms-2"></i>
+    }
+  </button>
+
+  @if (errorMsg()) {
+    <p class="mt-1 rounded-xl bg-red-800 px-4 py-2 text-center text-sm font-semibold text-white">{{ errorMsg() }}</p>
+  }
+  <button type="button" class="mx-auto block text-sm font-semibold text-[#00298d] transition hover:underline">Forgot password?</button>
+</form>
