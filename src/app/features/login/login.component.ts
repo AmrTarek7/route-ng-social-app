@@ -20,13 +20,11 @@ export class LoginComponent {
     {
       login: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]),
-    },
-    // { updateOn: 'submit' },
+    }, // { updateOn: 'submit' },
   );
 
   login(): void {
-    // console.log(this.registerForm);
-
+    //
     if (this.loginForm.valid) {
       console.log(this.loginForm);
       this.loading.set(true);
@@ -41,7 +39,8 @@ export class LoginComponent {
 
           this._routerService.navigate(['/feed']);
 
-          localStorage.setItem('userToken', `Bearer ${res.data.token}`);
+          localStorage.setItem('userToken', `${res.data.token}`);
+          localStorage.setItem('routeUserInfo', JSON.stringify(res.data.user));
         },
         error: (err) => {
           this.loading.set(false);
