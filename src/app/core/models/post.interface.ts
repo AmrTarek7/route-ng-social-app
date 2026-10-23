@@ -11,19 +11,18 @@ export interface PostModel {
   sharesCount: number;
   likesCount: number;
   isShare: boolean;
-  id: string;
   bookmarked: boolean;
   image?: string;
 }
 
-export interface User {
+interface User {
   _id: string;
   name: string;
   username: string;
   photo: string;
 }
 
-export interface SharedPost {
+interface SharedPost {
   _id: string;
   body?: string;
   privacy: string;
@@ -40,14 +39,14 @@ export interface SharedPost {
   image?: string;
 }
 
-export interface User2 {
+interface User2 {
   _id: string;
   name: string;
   username: string;
   photo: string;
 }
 
-export interface TopComment {
+interface TopComment {
   _id: string;
   content: string;
   commentCreator: CommentCreator;
@@ -57,14 +56,14 @@ export interface TopComment {
   createdAt: string;
 }
 
-export interface CommentCreator {
+interface CommentCreator {
   _id: string;
   name: string;
   username: string;
   photo: string;
 }
 
-export interface TopComment2 {
+interface TopComment2 {
   _id: string;
   content: string;
   image?: string;
@@ -74,8 +73,7 @@ export interface TopComment2 {
   likes: string[];
   createdAt: string;
 }
-
-export interface CommentCreator2 {
+interface CommentCreator2 {
   _id: string;
   name: string;
   username: string;

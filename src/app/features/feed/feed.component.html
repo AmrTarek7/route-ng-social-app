@@ -1,195 +1,49 @@
-<section class="max-w-147.5 mx-auto py-6 px-3 sm:px-0 space-y-4">
-  <!-- ========================================== -->
-  <!-- LOADING SKELETON STATE                     -->
-  <!-- ========================================== -->
-  @if (isLoading()) {
-    @for (item of [1, 2, 3]; track item) {
-      <div class="bg-white border border-gray-200 rounded-xl shadow-xs p-4 animate-pulse space-y-4">
-        <!-- Header Skeleton -->
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-gray-200 rounded-full"></div>
-          <div class="space-y-1.5 flex-1">
-            <div class="h-3.5 bg-gray-200 rounded w-1/4"></div>
-            <div class="h-2.5 bg-gray-200 rounded w-1/6"></div>
-          </div>
-        </div>
-        <!-- Body Skeleton -->
-        <div class="space-y-2">
-          <div class="h-3 bg-gray-200 rounded w-3/4"></div>
-          <div class="h-3 bg-gray-200 rounded w-1/2"></div>
-        </div>
-        <!-- Media Skeleton -->
-        <div class="h-64 bg-gray-200 rounded-lg w-full"></div>
-      </div>
-    }
-  }
+<main class="mx-auto max-w-7xl px-3 py-3.5">
+  <div class="min-w-0">
+    <div class="grid gap-4 xl:grid-cols-[240px_minmax(0,1fr)_300px]">
+      <!-- ========================================== -->
+      <!-- feed Left Sidebar  (Side Navigation)       -->
+      <!-- ========================================== -->
+      <app-menu-nav-aside />
 
-  <!-- ========================================== -->
-  <!-- EMPTY FEED STATE                           -->
-  <!-- ========================================== -->
-  @if (!isLoading() && postsList().length === 0) {
-    <div class="bg-white border border-gray-200 rounded-xl p-8 text-center shadow-xs">
-      <div class="w-14 h-14 mx-auto mb-3 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
-        <i class="fa-solid fa-newspaper"></i>
-      </div>
-      <h3 class="text-base font-semibold text-gray-900">No posts found</h3>
-      <p class="text-sm text-gray-500 mt-1">There are no posts to display in your feed right now.</p>
+      <section class="space-y-4">
+        <!-- ========================================== -->
+        <!-- Create Post Section                        -->
+        <!-- ========================================== -->
+        <app-create-post (refreshPostsList)="getFeedPosts()" />
+
+        <!-- ========================================== -->
+        <!-- LOADING SKELETON STATE                     -->
+        <!-- ========================================== -->
+        @if (isLoading()) {
+          <app-skeleton-post />
+        }
+
+        <!-- ========================================== -->
+        <!-- DYNAMIC POSTS LIST                         -->
+        <!-- ========================================== -->
+        @for (post of postsList(); track post._id) {
+          <section class="flex flex-col gap-1.5">
+            <app-post [post]="post" (refreshPostsList)="getFeedPosts()"></app-post>
+          </section>
+        } @empty {
+          <!-- ========================================== -->
+          <!-- EMPTY FEED STATE                           -->
+          <!-- ========================================== -->
+          <div class="bg-white border border-gray-200 rounded-xl p-8 text-center shadow-xs">
+            <div class="w-14 h-14 mx-auto mb-3 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
+              <i class="fa-solid fa-newspaper"></i>
+            </div>
+            <h3 class="text-base font-semibold text-gray-900">No posts found</h3>
+            <p class="text-sm text-gray-500 mt-1">There are no posts to display in your feed right now.</p>
+          </div>
+        }
+      </section>
+
+      <!-- ========================================== -->
+      <!-- feed Right Sidebar  (Suggested Friends)    -->
+      <!-- ========================================== -->
+      <app-suggested-followers-aside />
     </div>
-  }
-
-  <!-- ========================================== -->
-  <!-- DYNAMIC POSTS LIST                         -->
-  <!-- ========================================== -->
-  @for (post of postsList(); track post._id || post.id) {
-    <article class="bg-white border border-gray-200 rounded-xl shadow-xs overflow-hidden">
-      <!-- Post Header -->
-      <div class="p-4 pb-2 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <!-- User Avatar -->
-          <img [src]="post.user.photo || defaultAvatar" [alt]="post.user.name || 'User'" (error)="onImageError($event, defaultAvatar)" class="w-10 h-10 rounded-full object-cover border border-gray-100" />
-          <div>
-            <!-- User Display Name -->
-            <h3 class="font-semibold text-gray-900 text-sm hover:underline cursor-pointer">
-              {{ post.user.name || 'Anonymous' }}
-            </h3>
-            <!-- Post Date & Privacy Icon -->
-            <div class="flex items-center gap-1.5 text-xs text-gray-500">
-              <span>{{ post.createdAt | date: 'd MMM, y • h:mm a' }}</span>
-              <span>•</span>
-              @if (post.privacy === 'private') {
-                <i class="fa-solid fa-lock text-[11px]" title="Private"></i>
-              } @else {
-                <i class="fa-solid fa-earth-americas text-[11px]" title="Public"></i>
-              }
-            </div>
-          </div>
-        </div>
-
-        <!-- 3-Dots Dropdown Trigger -->
-        <button type="button" class="text-gray-500 hover:bg-gray-100 rounded-full p-2 w-8 h-8 flex items-center justify-center transition-colors">
-          <i class="fa-solid fa-ellipsis"></i>
-        </button>
-      </div>
-
-      <!-- Post Body Text -->
-      @if (post.body) {
-        <div class="px-4 py-2">
-          <p class="text-gray-800 text-sm leading-relaxed whitespace-pre-line">
-            {{ post.body }}
-          </p>
-        </div>
-      }
-
-      <!-- Direct Post Image (if present) -->
-      @if (post.image) {
-        <div class="w-full bg-gray-50 border-t border-b border-gray-100 overflow-hidden">
-          <img [src]="post.image" alt="Post media" class="w-full max-h-130 object-cover" />
-        </div>
-      }
-
-      <!-- Nested Shared Post (if isShare or sharedPost exists) -->
-      @if (post.sharedPost) {
-        <div class="px-4 pb-3">
-          <div class="border border-gray-200 rounded-lg overflow-hidden bg-white hover:border-gray-300 transition-colors">
-            <!-- Shared Post Author -->
-            <div class="p-3 pb-2 flex items-center justify-between">
-              <div class="flex items-center gap-2.5">
-                <img [src]="post.sharedPost.user.photo || defaultAvatar" [alt]="post.sharedPost.user.name || 'Original Author'" (error)="onImageError($event, defaultAvatar)" class="w-8 h-8 rounded-full object-cover" />
-                <div>
-                  <h4 class="font-semibold text-xs text-gray-900 hover:underline cursor-pointer">
-                    {{ post.sharedPost.user.name || 'Original Author' }}
-                  </h4>
-                  <p class="text-[11px] text-gray-500">
-                    {{ post.sharedPost.createdAt | date: 'd MMM, y • h:mm a' }}
-                  </p>
-                </div>
-              </div>
-              <span class="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full"> Original Post </span>
-            </div>
-
-            <!-- Shared Post Text -->
-            @if (post.sharedPost.body) {
-              <div class="px-3 pb-2">
-                <p class="text-xs text-gray-700 leading-relaxed whitespace-pre-line">
-                  {{ post.sharedPost.body }}
-                </p>
-              </div>
-            }
-
-            <!-- Shared Post Image -->
-            @if (post.sharedPost.image) {
-              <div class="w-full bg-gray-100 overflow-hidden">
-                <img [src]="post.sharedPost.image" alt="Shared media" class="w-full max-h-105 object-cover" />
-              </div>
-            }
-          </div>
-        </div>
-      }
-
-      <!-- Social Counters (Likes, Comments, Shares) -->
-      <div class="px-4 py-2.5 flex items-center justify-between text-xs text-gray-500">
-        <!-- Likes Badge and Count -->
-        <div class="flex items-center gap-1.5">
-          <span class="w-4.5 h-4.5 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xs">
-            <i class="fa-solid fa-thumbs-up"></i>
-          </span>
-          <span class="font-medium text-gray-700"> {{ post.likesCount || post.likes.length || 0 }} likes </span>
-        </div>
-
-        <!-- Comments & Shares Counts -->
-        <div class="flex items-center gap-3">
-          <span>{{ post.commentsCount || 0 }} comments</span>
-          <span>{{ post.sharesCount || 0 }} shares</span>
-        </div>
-      </div>
-
-      <!-- Action Buttons Row -->
-      <div class="px-2 py-1 mx-2 border-t border-b border-gray-100 flex items-center justify-between gap-1">
-        <button type="button" class="flex-1 flex items-center justify-center gap-2 py-2 text-xs sm:text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-          <i class="fa-regular fa-thumbs-up text-base"></i>
-          <span>Like</span>
-        </button>
-
-        <button type="button" class="flex-1 flex items-center justify-center gap-2 py-2 text-xs sm:text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-          <i class="fa-regular fa-comment text-base"></i>
-          <span>Comment</span>
-        </button>
-
-        <button type="button" class="flex-1 flex items-center justify-center gap-2 py-2 text-xs sm:text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-          <i class="fa-solid fa-share text-base"></i>
-          <span>Share</span>
-        </button>
-      </div>
-
-      <!-- Top Comment Section -->
-      @if (post.topComment) {
-        <div class="p-4 pt-3 bg-gray-50/60 border-t border-gray-100 space-y-2">
-          <div class="flex items-start gap-2.5">
-            <!-- Commenter Avatar -->
-            <img [src]="post.topComment.commentCreator.photo || defaultAvatar" [alt]="post.topComment.commentCreator.name || 'Commenter'" (error)="onImageError($event, defaultAvatar)" class="w-8 h-8 rounded-full object-cover shrink-0 mt-0.5" />
-
-            <!-- Comment Bubble -->
-            <div class="bg-gray-100 rounded-2xl px-3.5 py-2 max-w-[85%]">
-              <span class="font-semibold text-xs text-gray-900 block hover:underline cursor-pointer">
-                {{ post.topComment.commentCreator.name || 'User' }}
-              </span>
-              <p class="text-xs text-gray-700 mt-0.5">
-                {{ post.topComment.content }}
-              </p>
-              @if (post.topComment.image) {
-                <div class="mt-2 rounded-lg overflow-hidden max-w-50">
-                  <img [src]="post.topComment.image" alt="Comment attachment" class="w-full object-cover" />
-                </div>
-              }
-            </div>
-          </div>
-
-          <!-- View All Comments Link -->
-          @if ((post.commentsCount || 0) > 1) {
-            <button type="button" class="text-xs font-semibold text-blue-600 hover:underline cursor-pointer pl-10.5">View all {{ post.commentsCount }} comments</button>
-          }
-        </div>
-      }
-    </article>
-  }
-</section>
+  </div>
+</main>

@@ -1,12 +1,16 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { DatePipe } from '@angular/common';
 import { PostsService } from '../../core/services/posts.service';
 import { PostModel } from '../../core/models/post.interface';
-import { TimeAgoPipe } from '../../shared/pipes/time-ago.pipe';
+import { PostComponent } from '../../shared/ui/post/post.component';
+import { User } from '../../core/models/user.interface';
+import { SkeletonPostComponent } from '../../shared/ui/skeleton-post/skeleton-post.component';
+import { CreatePostComponent } from './components/create-post/create-post.component';
+import { SuggestedFollowersAsideComponent } from './components/suggested-followers-aside/suggested-followers-aside.component';
+import { MenuNavAsideComponent } from './components/menu-nav-aside/menu-nav-aside.component';
 
 @Component({
   selector: 'app-feed',
-  imports: [DatePipe],
+  imports: [PostComponent, SkeletonPostComponent, CreatePostComponent, SuggestedFollowersAsideComponent, MenuNavAsideComponent],
   templateUrl: './feed.component.html',
   styleUrl: './feed.component.css',
 })
@@ -15,20 +19,18 @@ export class FeedComponent implements OnInit {
 
   postsList = signal<PostModel[]>([]);
   isLoading = signal<boolean>(true);
-
-  readonly defaultAvatar = 'https://flowbite.com/docs/images/people/profile-picture-5.jpg';
+  readonly userData = signal<User>(JSON.parse(localStorage.getItem('routeUserInfo') as string));
 
   ngOnInit(): void {
-    this.getPosts();
+    this.getFeedPosts();
   }
 
-  getPosts(): void {
+  getFeedPosts(): void {
     this.isLoading.set(true);
-    this._postService.getAllPosts().subscribe({
+    this._postService.getFeedPosts().subscribe({
       next: (res) => {
         console.log('Posts API Response:', res);
-        const posts = res.data?.posts || res.posts || [];
-        this.postsList.set(posts);
+        this.postsList.set(res.data?.posts);
         this.isLoading.set(false);
       },
       error: (err) => {
@@ -36,12 +38,5 @@ export class FeedComponent implements OnInit {
         this.isLoading.set(false);
       },
     });
-  }
-
-  onImageError(event: Event, fallback: string = this.defaultAvatar): void {
-    const target = event.target as HTMLImageElement;
-    if (target && target.src !== fallback) {
-      target.src = fallback;
-    }
   }
 }
