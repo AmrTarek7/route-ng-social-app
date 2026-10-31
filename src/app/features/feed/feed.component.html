@@ -1,48 +1,38 @@
 <main class="mx-auto max-w-7xl px-3 py-3.5">
   <div class="min-w-0">
     <div class="grid gap-4 xl:grid-cols-[240px_minmax(0,1fr)_300px]">
-      <!-- ========================================== -->
-      <!-- feed Left Sidebar  (Side Navigation)       -->
-      <!-- ========================================== -->
+      <!-- feed Left Sidebar  (Side Navigation) -->
       <app-menu-nav-aside />
 
       <section class="space-y-4">
-        <!-- ========================================== -->
-        <!-- Create Post Section                        -->
-        <!-- ========================================== -->
+        <!-- Create Post Section -->
         <app-create-post (refreshPostsList)="getFeedPosts()" />
 
-        <!-- ========================================== -->
-        <!-- LOADING SKELETON STATE                     -->
-        <!-- ========================================== -->
+        <!-- LOADING SKELETON STATE  -->
         @if (isLoading()) {
-          <app-skeleton-post />
+          <app-skeleton-post [countOfPostsSkeleton]="[1, 2]" />
         }
 
-        <!-- ========================================== -->
-        <!-- DYNAMIC POSTS LIST                         -->
-        <!-- ========================================== -->
+        <!-- DYNAMIC POSTS LIST -->
         @for (post of postsList(); track post._id) {
           <section class="flex flex-col gap-1.5">
             <app-post [post]="post" (refreshPostsList)="getFeedPosts()"></app-post>
           </section>
         } @empty {
-          <!-- ========================================== -->
-          <!-- EMPTY FEED STATE                           -->
-          <!-- ========================================== -->
-          <div class="bg-white border border-gray-200 rounded-xl p-8 text-center shadow-xs">
-            <div class="w-14 h-14 mx-auto mb-3 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
-              <i class="fa-solid fa-newspaper"></i>
+          @if (!isLoading()) {
+            <!-- EMPTY FEED STATE -->
+            <div class="bg-white border border-gray-200 rounded-xl p-8 text-center shadow-xs">
+              <div class="w-14 h-14 mx-auto mb-3 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
+                <i class="fa-solid fa-newspaper"></i>
+              </div>
+              <h3 class="text-base font-semibold text-gray-900">No posts found</h3>
+              <p class="text-sm text-gray-500 mt-1">There are no posts to display in your feed right now.</p>
             </div>
-            <h3 class="text-base font-semibold text-gray-900">No posts found</h3>
-            <p class="text-sm text-gray-500 mt-1">There are no posts to display in your feed right now.</p>
-          </div>
+          }
         }
       </section>
 
-      <!-- ========================================== -->
-      <!-- feed Right Sidebar  (Suggested Friends)    -->
-      <!-- ========================================== -->
+      <!-- feed Right Sidebar  (Suggested Friends)   -->
       <app-suggested-followers-aside />
     </div>
   </div>

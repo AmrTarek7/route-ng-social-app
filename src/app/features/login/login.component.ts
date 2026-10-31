@@ -37,10 +37,9 @@ export class LoginComponent {
           this.loginForm.reset();
           this.errorMsg.set('');
 
-          this._routerService.navigate(['/feed']);
-
           localStorage.setItem('userToken', `${res.data.token}`);
           localStorage.setItem('routeUserInfo', JSON.stringify(res.data.user));
+          this._routerService.navigate(['/feed']);
         },
         error: (err) => {
           this.loading.set(false);
