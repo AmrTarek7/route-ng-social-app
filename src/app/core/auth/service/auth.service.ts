@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
@@ -11,12 +11,26 @@ export class AuthService {
 
   private _http = inject(HttpClient);
 
+  private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('userToken');
+
+    return new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+  }
+
   register(formBody: any): Observable<any> {
     return this._http.post(`${this.baseURL}/users/signup`, formBody);
   }
 
   logIn(formBody: any): Observable<any> {
     return this._http.post(`${this.baseURL}/users/signin`, formBody);
+  }
+
+  changePassword(formBody: any): Observable<any> {
+    return this._http.patch(`${this.baseURL}/users/change-password`, formBody, {
+      headers: this.getAuthHeaders(),
+    });
   }
 
   togglePassword(pass: HTMLInputElement, icon: HTMLElement): void {
