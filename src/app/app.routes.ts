@@ -9,6 +9,7 @@ import { FeedComponent } from './features/feed/feed.component';
 import { ProfileComponent } from './features/profile/profile.component';
 import { NotFoundComponent } from './features/not-found/not-found.component';
 import { NotificationComponent } from './features/notification/notification.component';
+import { PostDetailsComponent } from './features/post-details/post-details.component';
 
 export const routes: Routes = [
   {
@@ -30,7 +31,8 @@ export const routes: Routes = [
       { path: 'feed', component: FeedComponent, title: 'feed' },
       { path: 'profile', component: ProfileComponent, title: 'profile' },
       { path: 'notifications', component: NotificationComponent, title: 'Notification' },
-      { path: 'settings', component: ChangePasswordComponent, title: 'change-password' },
+      { path: 'settings', component: ChangePasswordComponent, title: 'settings' },
+      { path: 'post/:id', component: PostDetailsComponent },
     ],
   },
 

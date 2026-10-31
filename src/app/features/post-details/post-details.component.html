@@ -1,0 +1,16 @@
+<div class="mx-auto max-w-7xl px-3 py-3.5">
+  <main class="min-w-0">
+    <div class="mx-auto max-w-3xl space-y-4">
+      <button [routerLink]="['/feed']" class="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50">
+        <svg lucideArrowLeft [size]="16"></svg>
+        Back
+      </button>
+
+      @if (!post()) {
+        <app-skeleton-post [countOfPostsSkeleton]="[1]" />
+      } @else {
+        <app-post [post]="post()" />
+      }
+    </div>
+  </main>
+</div>

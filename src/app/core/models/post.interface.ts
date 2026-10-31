@@ -22,7 +22,7 @@ interface User {
   photo: string;
 }
 
-interface SharedPost {
+export interface SharedPost {
   _id: string;
   body?: string;
   privacy: string;
