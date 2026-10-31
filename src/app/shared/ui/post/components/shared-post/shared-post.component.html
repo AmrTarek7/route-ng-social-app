@@ -1,0 +1,30 @@
+<div class="mx-4 my-3 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
+  <div class="p-3">
+    <!-- Shared Post Author -->
+    <div class="mb-2 flex items-center gap-2">
+      <img [src]="sharedPost()?.user?.photo" [alt]="sharedPost()?.user?.name || 'Original Author'" (error)="onImageError($event)" class="h-9 w-9 rounded-full object-cover" />
+      <div class="min-w-0">
+        <p class="truncate text-sm font-bold text-slate-900">{{ sharedPost()?.user?.name || 'Original Author' }}</p>
+        <p class="truncate text-xs text-slate-500">{{ '@' + sharedPost()?.user?.username || '@Original Author' }}</p>
+      </div>
+      <button [routerLink]="['/post', sharedPost()?._id]" class="ml-auto inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-bold text-[#1877f2] hover:bg-[#e7f3ff]">
+        Original Post
+        <svg lucideExternalLink [size]="13"></svg>
+      </button>
+    </div>
+
+    <!-- Shared Post Text -->
+    @if (sharedPost()?.body) {
+      <p class="whitespace-pre-wrap text-sm leading-relaxed text-slate-800">{{ sharedPost()?.body }}</p>
+    }
+  </div>
+
+  <!-- Shared Post Image -->
+  @if (sharedPost()?.image) {
+    <div class="border-t border-slate-200">
+      <button type="button" class="group relative block w-full cursor-zoom-in">
+        <img alt="Shared post" class="max-h-140 w-full object-cover" [src]="sharedPost()?.image" /><span class="pointer-events-none absolute inset-0 bg-black/0 transition group-hover:bg-black/10"></span>
+      </button>
+    </div>
+  }
+</div>

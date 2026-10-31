@@ -1,0 +1,46 @@
+<div class="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+  <div class="flex items-center gap-2">
+    <svg lucideUsers [size]="17" class="text-[#1877f2]"></svg>
+    <h4 class="text-base font-extrabold text-slate-900">People who reacted</h4>
+  </div>
+  <button (click)="closeLikeModal()" type="button" class="inline-flex h-8 w-8 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-slate-700">
+    <svg lucideX [size]="16"></svg>
+  </button>
+</div>
+
+<div class="max-h-105 overflow-y-auto px-2 py-2">
+  <div class="space-y-1">
+    @for (user of likesList(); track user._id) {
+      <a class="flex items-center gap-3 rounded-xl px-3 py-2 transition hover:bg-slate-100" [routerLink]="['/profile', user._id]">
+        <img [alt]="user.name" class="h-10 w-10 rounded-full object-cover" [src]="user.photo" />
+        <div class="min-w-0">
+          <p class="truncate text-sm font-bold text-slate-900">{{ user.name }}</p>
+          <p class="truncate text-xs text-slate-500">{{ '@' + user.username }}</p>
+        </div>
+      </a>
+    } @empty {
+      @for (skelton of [1, 2, 3, 4]; track $index) {
+        <div class="flex items-center gap-3 rounded-xl px-3 py-2 animate-pulse">
+          <!-- Avatar Placeholder -->
+          <div class="h-10 w-10 rounded-full bg-slate-200 shrink-0"></div>
+
+          <!-- Text Placeholders -->
+          <div class="min-w-0 flex-1 space-y-1.5">
+            <div class="h-4 w-28 rounded bg-slate-200"></div>
+            <div class="h-3 w-20 rounded bg-slate-200"></div>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</div>
+
+@if (pagination().currentPage < pagination().numberOfPages) {
+  <div class="border-t border-slate-200 px-4 py-3">
+    <button (click)="getNextPage()" type="button" class="w-full rounded-xl border border-slate-300 px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-100 disabled:opacity-60">Load more</button>
+  </div>
+} @else if (pagination().currentPage === pagination().numberOfPages) {
+  <div class="border-t border-slate-200 px-4 py-3">
+    <p class="text-center text-sm text-slate-500">No more likes</p>
+  </div>
+}

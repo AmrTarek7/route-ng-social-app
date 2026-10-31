@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-skeleton-post',
@@ -6,4 +6,6 @@ import { Component } from '@angular/core';
   templateUrl: './skeleton-post.component.html',
   styleUrl: './skeleton-post.component.css',
 })
-export class SkeletonPostComponent {}
+export class SkeletonPostComponent {
+  countOfPostsSkeleton = input<number[]>([1, 2, 3, 4]);
+}
