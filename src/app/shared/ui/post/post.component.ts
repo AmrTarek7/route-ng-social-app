@@ -1,28 +1,58 @@
-import { Component, computed, inject, input, linkedSignal, output, signal } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal, output, signal, HostListener, ElementRef, ViewChild } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { PostModel } from '../../../core/models/post.interface';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
 import { PostsService } from '../../../core/services/posts.service';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
-import { LucideBookmark } from '@lucide/angular';
+import { LucideBookmark, LucideChevronDown, LucideEarth, LucideEllipsis, LucideLock, LucideMessageCircle, LucideRepeat2, LucideShare2, LucideThumbsUp, LucideUsers } from '@lucide/angular';
+import { SharedPostComponent } from './components/shared-post/shared-post.component';
+import { PostPrivacy } from '../../../core/enums/post-privacy.enum';
+import { RouterLink } from '@angular/router';
+import { PostLikesComponent } from './components/post-likes/post-likes.component';
+import { ModalComponent } from '../modal/modal.component';
+import { SharePostModalComponent } from './components/share-post-modal/share-post-modal.component';
+import { initDropdowns } from 'flowbite';
+import { Dropdown } from 'flowbite';
+import { PostCommentsComponent } from './components/post-comments/post-comments.component';
 
 @Component({
   selector: 'app-post',
-  imports: [DatePipe, ReactiveFormsModule, LucideBookmark],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    LucideMessageCircle,
+    LucideShare2,
+    LucideBookmark,
+    LucideThumbsUp,
+    LucideRepeat2,
+    TimeAgoPipe,
+    LucideUsers,
+    LucideLock,
+    LucideEllipsis,
+    LucideEarth,
+    LucideChevronDown,
+    SharedPostComponent,
+    PostLikesComponent,
+    ModalComponent,
+    SharePostModalComponent,
+    PostCommentsComponent,
+  ],
   templateUrl: './post.component.html',
   styleUrl: './post.component.css',
 })
 export class PostComponent {
+  //
   _postsService = inject(PostsService);
 
   myId = signal<string>(JSON.parse(localStorage.getItem('routeUserInfo') as string)._id);
   userLoginData = signal<string>(JSON.parse(localStorage.getItem('routeUserInfo') as string));
+  postPrivacyEnum = PostPrivacy;
 
   // signal to update like button when user like post
-
   readonly defaultAvatar = 'https://flowbite.com/docs/images/people/profile-picture-5.jpg';
 
   post = input.required<PostModel>();
+  localPost = linkedSignal(() => this.post());
 
   refreshPostsList = output<void>();
 
@@ -32,48 +62,62 @@ export class PostComponent {
   // signals
   editPost = signal(false);
   disableSaveEditBtn = signal(false);
-
-  localPost = linkedSignal(() => this.post());
-
-  userLikedPost = computed(() => this.localPost().likes.includes(this.myId()));
+  disablePrivacyBtn = signal(false);
   isLiking = signal(false);
 
+  showComments = signal(false);
+
+  userLikedPost = computed(() => this.localPost().likes.includes(this.myId()));
   isBookmarkedPost = linkedSignal(() => this.localPost().bookmarked);
+  loadingBookmarkPostStatus = signal(false);
+
+  // modal
+  isModalOpen = signal(false);
+
+  modalType = signal<'likesModal' | 'shareModal'>('shareModal');
+
   // computed
   btnSaveText = computed(() => {
     return this.disableSaveEditBtn() ? 'Saving...' : 'Save';
   });
 
-  // Hide & Show User Menu
-  togglePostOptions(element: HTMLElement | HTMLInputElement): void {
-    //
-    if (element.classList.contains('hidden')) {
-      element.classList.remove('hidden');
-    } else {
-      element.classList.add('hidden');
-    }
+  ngAfterViewInit(): void {
+    initDropdowns();
   }
 
-  deletePostFromParent(postOptions: HTMLElement | HTMLInputElement) {
+  toggleShowComments() {
+    this.showComments.set(!this.showComments());
+  }
+
+  refreshFeed(): void {
+    this.refreshPostsList.emit();
+  }
+
+  // modal Functions
+  openModal(modalType: 'likesModal' | 'shareModal') {
+    this.modalType.set(modalType);
+    if (modalType === 'likesModal') {
+      if (this.post().likesCount == 0) return;
+    }
+    this.isModalOpen.set(true);
+  }
+
+  closeModal() {
+    this.isModalOpen.set(false);
+  }
+
+  deletePostFromParent() {
     this._postsService.deletePost(this.localPost()._id).subscribe({
       next: () => {
         console.info('%cPost deleted successfully', 'color: green; font-weight: bold; font-size: 20px;');
-        this.togglePostOptions(postOptions);
-        this.refreshPostsList.emit();
+        this.refreshFeed();
       },
       error: () => console.error('Failed to delete post', 'color: red; font-weight: bold; font-size: 20px;'),
     });
   }
 
-  onImageError(event: Event, fallback: string = this.defaultAvatar): void {
-    const target = event.target as HTMLImageElement;
-    if (target && target.src !== fallback) {
-      target.src = fallback;
-    }
-  }
-
-  openEditPost(postOptions: HTMLElement | HTMLInputElement) {
-    this.togglePostOptions(postOptions);
+  //! Edit post
+  openEditPost() {
     this.editContentValue.setValue(this.localPost().body);
     this.editPost.set(true);
   }
@@ -124,8 +168,8 @@ export class PostComponent {
   }
 
   //! Bookmark and Unbookmark Post
-  toggleBookmarkPost(postOptions: HTMLElement | HTMLInputElement): void {
-    this.togglePostOptions(postOptions);
+  toggleBookmarkPost(): void {
+    this.loadingBookmarkPostStatus.set(true);
     this._postsService.bookmarkPost(this.localPost()._id).subscribe({
       next: () => {
         this.localPost.update((post) => ({
@@ -134,9 +178,33 @@ export class PostComponent {
         }));
 
         this.isBookmarkedPost.set(!this.isBookmarkedPost());
+
+        this.loadingBookmarkPostStatus.set(false);
       },
       error: (err) => {
         console.error('Failed to toggle like:', err);
+        this.loadingBookmarkPostStatus.set(false);
+      },
+    });
+  }
+
+  // Edit My Post Privacy
+  updatePostPrivacy(privacy: string) {
+    if (this.localPost().privacy === privacy) {
+      return;
+    }
+
+    const newPrivacy = { privacy: privacy };
+    this.localPost.update((post) => ({ ...post, privacy }));
+    this.disablePrivacyBtn.set(true);
+    this._postsService.updatePost(this.localPost()._id, newPrivacy).subscribe({
+      next: () => {
+        console.info('%cPost privacy updated successfully', 'color: green; font-weight: bold; font-size: 20px;');
+        this.disablePrivacyBtn.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to update post privacy:', err);
+        this.disablePrivacyBtn.set(false);
       },
     });
   }
