@@ -1,0 +1,9 @@
+@if (isOpen()) {
+  <!-- الخلفية المعتمة، الضغط عليها يغلق المودال -->
+  <div class="fixed inset-0 z-71 flex items-center justify-center bg-slate-900/65 p-4" (click)="close()">
+    <!-- محتوى المودال، (click.stop) لمنع إغلاق المودال عند الضغط داخله -->
+    <div (click)="$event.stopPropagation()" [ngClass]="maxWidthModal()" class="mx-auto w-full rounded-2xl border border-slate-200 bg-white shadow-2xl">
+      <ng-content />
+    </div>
+  </div>
+}
