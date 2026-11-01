@@ -1,6 +1,7 @@
 export interface CommentReplyIF {
   _id: string;
-  content: string;
+  content?: string;
+  image?: string;
   commentCreator: CommentCreator;
   post: string;
   parentComment: string;
