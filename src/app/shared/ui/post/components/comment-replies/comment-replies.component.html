@@ -1,0 +1,47 @@
+<div class="mt-2.5 border-l-2 border-slate-200 pl-3">
+  <div class="space-y-2.5">
+    @if (!loading()) {
+      @for (reply of replies(); track reply._id) {
+        <div class="flex items-start gap-2">
+          <img [alt]="reply.commentCreator.name" class="mt-0.5 h-7 w-7 shrink-0 rounded-full object-cover" [src]="reply.commentCreator.photo || defaultAvatar" />
+          <div class="min-w-0 flex-1">
+            <div class="inline-block max-w-full rounded-2xl bg-second-color px-3 py-2">
+              <div>
+                <p class="text-xs font-bold text-slate-900">{{ reply.commentCreator.name }}</p>
+                <p class="text-[11px] text-slate-500">{{ '@' + reply.commentCreator.username }} · {{ reply.createdAt | timeAgo }}</p>
+              </div>
+
+              @if (reply.content) {
+                <p class="mt-1 whitespace-pre-wrap text-xs text-slate-800 sm:text-sm">{{ reply.content }}</p>
+              }
+
+              @if (reply.image) {
+                <img alt="Reply" class="mt-2 max-h-44 w-full rounded-md object-cover" [src]="reply.image" />
+              }
+            </div>
+
+            <div class="mt-1 flex items-center gap-3 px-1">
+              <span class="text-[11px] font-semibold text-slate-400">{{ reply.createdAt | timeAgo }}</span>
+              <button type="button" class="text-[11px] font-semibold text-slate-500 hover:underline disabled:opacity-60">Like ({{ reply.likes.length }})</button>
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <p class="py-1 text-xs font-medium text-slate-500">No replies yet. Be the first to reply.</p>
+      }
+
+      @if (hasNextPage()) {
+        <div class="pt-1">
+          <button type="button" (click)="loadMoreReplies()" [disabled]="loadingMore()" class="text-xs font-bold text-[#1877f2] transition hover:underline disabled:opacity-60">
+            {{ loadingMore() ? 'Loading more...' : 'View more replies' }}
+          </button>
+        </div>
+      }
+    } @else {
+      <p class="py-2 text-xs font-medium text-slate-500">Loading replies...</p>
+    }
+  </div>
+
+  <!-- create reply Form -->
+  <app-comment-form [postId]="postId()" [commentId]="commentId()" (submitted)="onReplySubmitted($event)" />
+</div>
