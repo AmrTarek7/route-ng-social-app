@@ -64,13 +64,17 @@
             <div class="mt-1.5 flex items-center justify-between px-1">
               <div class="flex items-center gap-4">
                 <span class="text-xs font-semibold text-slate-400">{{ comment.createdAt | timeAgo }}</span>
-                <button class="text-xs font-semibold hover:underline disabled:opacity-60 text-slate-500">Like ({{ comment.likes.length }})</button>
                 <button
                   type="button"
-                  (click)="toggleReplies(comment._id)"
-                  [class.text-[#1877f2]]="isRepliesOpen(comment._id)"
-                  class="text-xs font-semibold transition hover:underline disabled:opacity-60 text-slate-500 hover:text-[#1877f2]"
+                  (click)="likeComment(comment._id)"
+                  [disabled]="isCommentLiking(comment._id)"
+                  [class.text-[#1877f2]]="isCommentLiked(comment)"
+                  [class.text-slate-500]="!isCommentLiked(comment)"
+                  class="text-xs font-semibold transition hover:underline disabled:cursor-not-allowed disabled:opacity-60"
                 >
+                  {{ (isCommentLiked(comment) ? 'Liked' : 'Like') + ' (' + comment.likes.length + ')' }}
+                </button>
+                <button type="button" (click)="toggleReplies(comment._id)" [class.text-[#1877f2]]="isRepliesOpen(comment._id)" class="text-xs font-semibold transition hover:underline disabled:opacity-60 text-slate-500 hover:text-[#1877f2]">
                   {{ isRepliesOpen(comment._id) ? 'Hide replies' : comment.repliesCount > 0 ? 'Reply (' + comment.repliesCount + ')' : 'Reply' }}
                 </button>
               </div>
@@ -97,11 +101,7 @@
             </div>
 
             @if (isRepliesOpen(comment._id)) {
-              <app-comment-replies
-                [postId]="postId()"
-                [commentId]="comment._id"
-                (replyCreated)="incrementRepliesCount(comment._id)"
-              />
+              <app-comment-replies [postId]="postId()" [commentId]="comment._id" (replyCreated)="incrementRepliesCount(comment._id)" />
             }
           </div>
         </div>
@@ -117,10 +117,12 @@
         </div>
       }
 
-      @if (meta()) {
-        @if (meta()!.pagination.currentPage < meta()!.pagination.numberOfPages) {
-          <div class="pt-2 text-center"><button class="rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-100 disabled:opacity-60">View more comments</button></div>
-        }
+      @if (hasNextPage()) {
+        <div class="pt-2 text-center">
+          <button type="button" (click)="loadMoreComments()" [disabled]="loadingMore()" class="rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-100 disabled:opacity-60">
+            {{ loadingMore() ? 'Loading more...' : 'View more comments' }}
+          </button>
+        </div>
       }
 
       <!-- loading -->

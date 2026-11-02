@@ -22,7 +22,16 @@
 
             <div class="mt-1 flex items-center gap-3 px-1">
               <span class="text-[11px] font-semibold text-slate-400">{{ reply.createdAt | timeAgo }}</span>
-              <button type="button" class="text-[11px] font-semibold text-slate-500 hover:underline disabled:opacity-60">Like ({{ reply.likes.length }})</button>
+              <button
+                type="button"
+                (click)="likeReply(reply._id)"
+                [disabled]="isReplyLiking(reply._id)"
+                [class.text-[#1877f2]]="isReplyLiked(reply)"
+                [class.text-slate-500]="!isReplyLiked(reply)"
+                class="text-[11px] font-semibold transition hover:underline disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {{ (isReplyLiked(reply) ? 'Liked' : 'Like') + ' (' + reply.likes.length + ')' }}
+              </button>
             </div>
           </div>
         </div>

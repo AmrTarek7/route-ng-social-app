@@ -16,6 +16,8 @@ export class CommentRepliesComponent implements OnInit {
 
   readonly defaultAvatar = 'https://flowbite.com/docs/images/people/profile-picture-5.jpg';
 
+  myId = signal<string>(JSON.parse(localStorage.getItem('routeUserInfo') as string)?._id ?? '');
+
   postId = input.required<string>();
   commentId = input.required<string>();
 
@@ -25,6 +27,7 @@ export class CommentRepliesComponent implements OnInit {
   meta = signal<Meta | null>(null);
   loading = signal(false);
   loadingMore = signal(false);
+  likingReplyIds = signal<Record<string, boolean>>({});
 
   hasNextPage = computed(() => {
     const currentMeta = this.meta();
@@ -76,5 +79,42 @@ export class CommentRepliesComponent implements OnInit {
     this.getCommentReplies();
 
     // console.log('res from FormComment to replies', e);
+  }
+
+  isReplyLiking(replyId: string): boolean {
+    return !!this.likingReplyIds()[replyId];
+  }
+
+  isReplyLiked(reply: CommentReplyIF): boolean {
+    return reply.likes.includes(this.myId());
+  }
+
+  likeReply(replyId: string): void {
+    if (this.isReplyLiking(replyId)) return;
+
+    this.likingReplyIds.update((prev) => ({ ...prev, [replyId]: true }));
+
+    this._commentsAndRepliesService.likeComment(this.postId(), replyId).subscribe({
+      next: () => {
+        const currentUserId = this.myId();
+        this.replies.update((prev) =>
+          prev.map((reply) => {
+            if (reply._id !== replyId) return reply;
+            const alreadyLiked = reply.likes.includes(currentUserId);
+            const updatedLikes = alreadyLiked ? reply.likes.filter((id) => id !== currentUserId) : [...reply.likes, currentUserId];
+            return {
+              ...reply,
+              likes: updatedLikes,
+              likesCount: updatedLikes.length,
+            };
+          }),
+        );
+        this.likingReplyIds.update((prev) => ({ ...prev, [replyId]: false }));
+      },
+      error: (err) => {
+        console.error('Failed to toggle reply like:', err);
+        this.likingReplyIds.update((prev) => ({ ...prev, [replyId]: false }));
+      },
+    });
   }
 }

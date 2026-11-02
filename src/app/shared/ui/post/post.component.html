@@ -106,24 +106,15 @@
     </div>
 
     <!-- Post Body Text -->
-    @if (localPost().body) {
-      <div class="mt-3">
-        @if (!editPost()) {
+    @if (!editPost()) {
+      @if (localPost().body) {
+        <div class="mt-3">
           <p class="text-gray-800 text-sm leading-relaxed whitespace-pre-line">
             {{ localPost().body }}
           </p>
-        }
-
-        @if (localPost().bookmarked) {
-          <div class="mt-3 inline-flex items-center gap-1 rounded-full bg-[#e7f3ff] px-2.5 py-1 text-[11px] font-bold text-[#1877f2]">
-            <svg lucideBookmark [size]="12"></svg>
-            Saved
-          </div>
-        }
-      </div>
-    }
-
-    @if (editPost()) {
+        </div>
+      }
+    } @else {
       <form (submit)="submitEditPost($event)" class="relative">
         <div class="mt-3">
           <textarea maxlength="5000" [formControl]="editContentValue" class="min-h-27.5 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm outline-none ring-[#1877f2]/20 focus:border-[#1877f2] focus:ring-2"></textarea>
@@ -133,6 +124,14 @@
           </div>
         </div>
       </form>
+    }
+
+    <!-- Bookmark Post -->
+    @if (localPost().bookmarked) {
+      <div class="mt-3 inline-flex items-center gap-1 rounded-full bg-[#e7f3ff] px-2.5 py-1 text-[11px] font-bold text-[#1877f2]">
+        <svg lucideBookmark [size]="12"></svg>
+        Saved
+      </div>
     }
   </div>
 
@@ -201,24 +200,21 @@
       [class.bg-[#e7f3ff]]="userLikedPost()"
       [class.hover:bg-slate-100]="!userLikedPost()"
       (click)="toggleLikePost()"
-      class="cursor-pointer flex items-center justify-center gap-1.5 rounded-md p-2 text-xs font-normal transition-colors disabled:cursor-not-allowed disabled:opacity-50 sm:gap-2 sm:text-sm text-slate-600"
+      class="flex items-center justify-center gap-1.5 rounded-md p-2 text-xs font-normal transition-colors disabled:cursor-not-allowed disabled:opacity-50 sm:gap-2 sm:text-sm text-slate-600"
     >
       <svg lucideThumbsUp [size]="18"></svg>
       <span>Like</span>
     </button>
-    <button
-      (click)="toggleShowComments()"
-      class="cursor-pointer flex items-center justify-center gap-1.5 rounded-md p-2 text-xs font-normal transition-colors disabled:cursor-not-allowed disabled:opacity-50 sm:gap-2 sm:text-sm text-slate-600 hover:bg-slate-100"
-    >
-      <svg lucideMessageCircle [size]="18"></svg>
 
+    <button (click)="toggleShowComments()" class="flex items-center justify-center gap-1.5 rounded-md p-2 text-xs font-normal transition-colors disabled:cursor-not-allowed disabled:opacity-50 sm:gap-2 sm:text-sm text-slate-600 hover:bg-slate-100">
+      <svg lucideMessageCircle [size]="18"></svg>
       <span>Comment</span>
     </button>
 
     <button
       (click)="openModal('shareModal')"
       [disabled]="localPost().isShare && localPost().user._id === myId()"
-      class="cursor-pointer flex items-center justify-center gap-1.5 rounded-md p-2 text-xs font-normal transition-colors disabled:cursor-not-allowed disabled:opacity-50 sm:gap-2 sm:text-sm text-slate-600 hover:bg-slate-100"
+      class="flex items-center justify-center gap-1.5 rounded-md p-2 text-xs font-normal transition-colors disabled:cursor-not-allowed disabled:opacity-50 sm:gap-2 sm:text-sm text-slate-600 hover:bg-slate-100"
     >
       <svg lucideShare2 [size]="18"></svg>
       <span>Share</span>
@@ -240,7 +236,7 @@
             }
           </div>
         </div>
-        <button class="mt-2 text-xs font-bold text-[#1877f2] hover:underline">View all comments</button>
+        <button (click)="toggleShowComments()" class="mt-2 text-xs font-bold text-[#1877f2] hover:underline">View all comments</button>
       </div>
     }
   } @else {
