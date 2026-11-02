@@ -8,7 +8,7 @@ import { UserLayoutComponent } from './layouts/user-layout/user-layout.component
 import { FeedComponent } from './features/feed/feed.component';
 import { ProfileComponent } from './features/profile/profile.component';
 import { NotFoundComponent } from './features/not-found/not-found.component';
-import { NotificationComponent } from './features/notification/notification.component';
+import { NotificationsComponent } from './features/notification/notifications.component';
 import { PostDetailsComponent } from './features/post-details/post-details.component';
 
 export const routes: Routes = [
@@ -30,7 +30,7 @@ export const routes: Routes = [
       // { path: '', redirectTo: 'feed', pathMatch: 'full' },
       { path: 'feed', component: FeedComponent, title: 'feed' },
       { path: 'profile', component: ProfileComponent, title: 'profile' },
-      { path: 'notifications', component: NotificationComponent, title: 'Notification' },
+      { path: 'notifications', component: NotificationsComponent, title: 'Notification' },
       { path: 'settings', component: ChangePasswordComponent, title: 'settings' },
       { path: 'post/:id', component: PostDetailsComponent },
     ],
