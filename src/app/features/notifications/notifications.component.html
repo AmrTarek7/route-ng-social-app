@@ -1,0 +1,55 @@
+<div class="mx-auto max-w-7xl px-3 py-3.5">
+  <main class="min-w-0">
+    <section class="rounded-xl border border-slate-200 bg-white shadow-sm sm:rounded-2xl">
+      <div class="border-b border-slate-200 p-4 sm:p-5">
+        <div class="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-black text-slate-900 sm:text-2xl">Notifications</h2>
+            <p class="mt-1 text-sm text-slate-500">Realtime updates for likes, comments, shares, and follows.</p>
+          </div>
+          <button
+            class="inline-flex w-full items-center justify-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-[.875rem] font-bold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+            [disabled]="readNotificationBtnDisabled()"
+            (click)="markAllNotificationsAsRead()"
+          >
+            <svg lucideCheckCheck size="15"></svg>
+            {{ readNotificationBtnText() }}
+          </button>
+        </div>
+        <div class="mt-4 grid grid-cols-2 gap-2 sm:flex sm:items-center">
+          <button
+            (click)="onNotificationTabChange('all')"
+            [ngClass]="notificationTab() === 'all' ? 'bg-[#1877f2] text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
+            type="button"
+            class="rounded-full px-4 py-1.5 text-sm font-bold transition"
+          >
+            All
+          </button>
+          <button
+            (click)="onNotificationTabChange('unread')"
+            [ngClass]="notificationTab() === 'unread' ? 'bg-[#1877f2] text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
+            type="button"
+            class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-bold transition"
+          >
+            Unread<span class="rounded-full px-2 py-0.5 text-xs bg-white text-[#1877f2]">{{ unreadCount() }}</span>
+          </button>
+
+          <!-- <button type="button" class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-bold transition bg-[#1877f2] text-white">Unread<span class="rounded-full px-2 py-0.5 text-xs bg-white/25 text-white">15</span></button> -->
+        </div>
+      </div>
+      <div class="space-y-2 p-3 sm:p-4">
+        @if (notificationTab() === 'all') {
+          @for (notification of notifications(); track $index) {
+            <app-notification [notification]="notification" (updateUnreadNotificationList)="updateUnreadNotification($event)" />
+          }
+        } @else {
+          @for (unreadNotification of unreadNotifications(); track $index) {
+            <app-notification [notification]="unreadNotification" (updateUnreadNotificationList)="updateUnreadNotification($event)" />
+          } @empty {
+            <div class="rounded-xl border border-slate-200 bg-slate-50 p-8 text-center"><p class="text-sm font-semibold text-slate-500">No unread notifications yet.</p></div>
+          }
+        }
+      </div>
+    </section>
+  </main>
+</div>

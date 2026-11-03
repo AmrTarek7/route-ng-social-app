@@ -1,8 +1,10 @@
-export interface Notification {
+import { NotificationType } from '../enums/notification-types.enum';
+
+export interface NotificationIF {
   _id: string;
   recipient: Recipient;
   actor: Actor;
-  type: string;
+  type: NotificationType;
   entityType: string;
   entityId: string;
   isRead: boolean;

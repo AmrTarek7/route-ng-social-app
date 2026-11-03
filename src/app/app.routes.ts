@@ -8,7 +8,7 @@ import { UserLayoutComponent } from './layouts/user-layout/user-layout.component
 import { FeedComponent } from './features/feed/feed.component';
 import { ProfileComponent } from './features/profile/profile.component';
 import { NotFoundComponent } from './features/not-found/not-found.component';
-import { NotificationsComponent } from './features/notification/notifications.component';
+import { NotificationsComponent } from './features/notifications/notifications.component';
 import { PostDetailsComponent } from './features/post-details/post-details.component';
 
 export const routes: Routes = [
