@@ -1,0 +1,25 @@
+<div class="rounded-xl border border-slate-200 p-2.5">
+  <div class="flex items-center justify-between gap-2">
+    <button type="button" class="flex min-w-0 items-center gap-2 rounded-md px-1 py-1 text-left transition hover:bg-slate-50">
+      <img [alt]="follower().username" class="h-10 w-10 rounded-full object-cover" [src]="follower().photo" />
+      <div class="min-w-0">
+        <p class="truncate text-sm font-bold text-slate-900 hover:underline">{{ follower().name }}</p>
+        <p class="truncate text-xs text-slate-500">@{{ follower().username }}</p>
+      </div>
+    </button>
+    <button [disabled]="loading()" (click)="followUser()" class="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold transition disabled:opacity-60 bg-[#e7f3ff] text-[#1877f2] hover:bg-[#d8ebff]">
+      @if (loading()) {
+        Updating...
+      } @else {
+        <svg lucideUserPlus [size]="13"></svg>
+        Follow
+      }
+    </button>
+  </div>
+  <div class="mt-2 flex items-center gap-2 text-[11px] font-semibold text-slate-500">
+    <span class="rounded-full bg-slate-100 px-2 py-0.5">{{ follower().followersCount }} followers</span>
+    @if (follower().mutualFollowersCount > 0) {
+      <span class="rounded-full bg-[#edf4ff] px-2 py-0.5 text-[#1877f2]">{{ follower().mutualFollowersCount }} mutual</span>
+    }
+  </div>
+</div>
