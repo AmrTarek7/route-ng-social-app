@@ -1,8 +1,7 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Component, inject, input, OnInit, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { PostsService } from '../../core/services/posts.service';
 import { PostComponent } from '../../shared/ui/post/post.component';
-import { PostModel } from '../../core/models/post.interface';
 import { LucideArrowLeft } from '@lucide/angular';
 import { SkeletonPostComponent } from '../../shared/ui/skeleton-post/skeleton-post.component';
 
@@ -13,19 +12,18 @@ import { SkeletonPostComponent } from '../../shared/ui/skeleton-post/skeleton-po
   styleUrl: './post-details.component.css',
 })
 export class PostDetailsComponent implements OnInit {
-  private activatedRoute = inject(ActivatedRoute);
-  private postsService = inject(PostsService);
-
   post = signal<any>(null);
 
-  ngOnInit(): void {
-    this.activatedRoute.paramMap.subscribe((params) => {
-      const id = params.get('id');
+  // The 'id' input is automatically bound to the route parameter
+  // through withComponentInputBinding() configured in the router.
+  id = input<string>('');
 
-      if (id) {
-        this.getPostDetails(id);
-      }
-    });
+  private postsService = inject(PostsService);
+
+  ngOnInit(): void {
+    if (this.id() === '') return;
+
+    this.getPostDetails(this.id());
   }
 
   getPostDetails(postId: string): void {
