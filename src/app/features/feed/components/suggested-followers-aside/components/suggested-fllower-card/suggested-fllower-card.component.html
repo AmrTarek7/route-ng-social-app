@@ -7,17 +7,31 @@
         <p class="truncate text-xs text-slate-500">@{{ follower().username }}</p>
       </div>
     </button>
-    <button [disabled]="loading()" (click)="followUser()" class="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold transition disabled:opacity-60 bg-[#e7f3ff] text-[#1877f2] hover:bg-[#d8ebff]">
+
+    <button
+      [ngClass]="myFollowingUsers().has(follower()._id) ? 'bg-[#e9f7ef] text-[#1f9d55]' : 'bg-[#e7f3ff] text-[#1877f2] hover:bg-[#d8ebff]'"
+      [disabled]="loading()"
+      (click)="followUser()"
+      class="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold transition disabled:opacity-60"
+    >
       @if (loading()) {
         Updating...
       } @else {
-        <svg lucideUserPlus [size]="13"></svg>
-        Follow
+        <!--  -->
+        @if (myFollowingUsers().has(follower()._id)) {
+          <svg lucideUserCheck [size]="13"></svg>
+          Following
+        } @else {
+          <svg lucideUserPlus [size]="13"></svg>
+          Follow
+        }
       }
     </button>
   </div>
   <div class="mt-2 flex items-center gap-2 text-[11px] font-semibold text-slate-500">
-    <span class="rounded-full bg-slate-100 px-2 py-0.5">{{ follower().followersCount }} followers</span>
+    @if (follower().followersCount >= 0) {
+      <span class="rounded-full bg-slate-100 px-2 py-0.5">{{ follower().followersCount }} followers</span>
+    }
     @if (follower().mutualFollowersCount > 0) {
       <span class="rounded-full bg-[#edf4ff] px-2 py-0.5 text-[#1877f2]">{{ follower().mutualFollowersCount }} mutual</span>
     }

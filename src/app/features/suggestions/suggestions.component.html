@@ -1,0 +1,83 @@
+<main class="mx-auto max-w-7xl px-3 py-3.5">
+  <div class="min-w-0">
+    <div class="mx-auto max-w-4xl space-y-4">
+      <button [routerLink]="['/feed']" class="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50">
+        <svg lucideArrowLeft [size]="16"></svg>
+        Back to feed
+      </button>
+
+      <section class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div class="mb-3 flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <svg lucideUsers class="text-[#1877f2]" [size]="18"></svg>
+            <h1 class="text-xl font-extrabold text-slate-900">All Suggested Friends</h1>
+          </div>
+          <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-bold text-slate-600">
+            {{ isSearching() ? searchUsers()?.length : this._userService.followersSuggestion().length }}
+          </span>
+        </div>
+
+        <label class="relative mb-4 block">
+          <svg lucideSearch [size]="16" class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></svg>
+          <input
+            #searchInput
+            (input)="onSearch(searchInput)"
+            placeholder="Search by name or username..."
+            class="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm text-slate-700 outline-none focus:border-[#1877f2] focus:bg-white"
+            value=""
+          />
+        </label>
+
+        <div class="grid gap-3 sm:grid-cols-2">
+          @if (searchUsers()) {
+            @if (searchLoading()) {
+              @for (skelton of skeltonCount(); track $index) {
+                <app-skeleton-follower-card />
+              }
+            } @else {
+              @for (item of searchUsers(); track item._id) {
+                <app-suggested-fllower-card [follower]="item"></app-suggested-fllower-card>
+              } @empty {
+                <p class="text-sm text-slate-500">No users matched your search.</p>
+              }
+            }
+          }
+          <!-- Empty search view defult suggistons list -->
+          @else {
+            @if (isLoadingMore()) {
+              @for (skelton of skeltonCount(); track $index) {
+                <app-skeleton-follower-card />
+              }
+            } @else {
+              @for (item of _userService.followersSuggestion(); track item._id) {
+                <app-suggested-fllower-card (refreshFollowersSuggestionsList)="getFollowSuggestions()" [follower]="item"></app-suggested-fllower-card>
+              }
+            }
+          }
+        </div>
+
+        @if (!searchUsers()) {
+          @if (hasNextPage()) {
+            <button
+              (click)="loadMoreSuggestions()"
+              [disabled]="isLoadingMore()"
+              class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-base border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-100 disabled:opacity-60"
+            >
+              {{ isLoadingMore() ? 'Loading...' : ' Load more users' }}
+            </button>
+          }
+        } @else {
+          @if (hasNextSearchPage()) {
+            <button
+              (click)="loadMoreSearch()"
+              [disabled]="searchLoading()"
+              class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-base border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-100 disabled:opacity-60"
+            >
+              {{ searchLoading() ? 'Loading...' : ' Load more users' }}
+            </button>
+          }
+        }
+      </section>
+    </div>
+  </div>
+</main>

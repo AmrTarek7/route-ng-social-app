@@ -10,6 +10,7 @@ import { ProfileComponent } from './features/profile/profile.component';
 import { NotFoundComponent } from './features/not-found/not-found.component';
 import { NotificationsComponent } from './features/notifications/notifications.component';
 import { PostDetailsComponent } from './features/post-details/post-details.component';
+import { SuggestionsComponent } from './features/suggestions/suggestions.component';
 
 export const routes: Routes = [
   {
@@ -32,6 +33,7 @@ export const routes: Routes = [
       { path: 'profile', component: ProfileComponent, title: 'profile' },
       { path: 'notifications', component: NotificationsComponent, title: 'Notification' },
       { path: 'settings', component: ChangePasswordComponent, title: 'settings' },
+      { path: 'suggestions', component: SuggestionsComponent, title: 'suggestions' },
       { path: 'post/:id', component: PostDetailsComponent },
     ],
   },
