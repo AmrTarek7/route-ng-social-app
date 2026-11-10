@@ -48,7 +48,7 @@ export class SuggestedFllowerCardComponent {
     if (following) {
       this._userService.myProfile.update((prev) => ({
         ...prev,
-        following: [...prev.following, this.follower()._id],
+        following: [...prev?.following, this.follower()._id],
       }));
 
       this.myFollowingUsers.update((prevSet) => {

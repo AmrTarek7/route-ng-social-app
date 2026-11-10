@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { LucideSearch, LucideUsers } from '@lucide/angular';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop'; // 1. استيراد الأداة الحديثة
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FollowerIF } from '../../../../core/models/follower.interface';
 import { Meta } from '../../../../core/models/meta-res.interface';
 import { UserService } from '../../../../core/services/user.service';
