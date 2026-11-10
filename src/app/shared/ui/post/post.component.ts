@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, linkedSignal, output, signal, HostListener, ElementRef, ViewChild } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal, output, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { PostModel } from '../../../core/models/post.interface';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
@@ -12,7 +12,6 @@ import { PostLikesComponent } from './components/post-likes/post-likes.component
 import { ModalComponent } from '../modal/modal.component';
 import { SharePostModalComponent } from './components/share-post-modal/share-post-modal.component';
 import { initDropdowns } from 'flowbite';
-import { Dropdown } from 'flowbite';
 import { PostCommentsComponent } from './components/post-comments/post-comments.component';
 
 @Component({

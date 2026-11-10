@@ -1,1 +1,270 @@
-<p>profile works!</p>
+<div class="mx-auto max-w-7xl px-3 py-3.5">
+  <main class="min-w-0">
+    <div class="space-y-5 sm:space-y-6">
+      <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_2px_10px_rgba(15,23,42,.06)] sm:rounded-[28px]">
+        <div class="group/cover relative h-44 bg-[linear-gradient(112deg,#0f172a_0%,#1e3a5f_36%,#2b5178_72%,#5f8fb8_100%)] sm:h-52 lg:h-60" [ngStyle]="coverStyle()">
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_24%,rgba(255,255,255,.14)_0%,rgba(255,255,255,0)_36%)]"></div>
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_86%_12%,rgba(186,230,253,.22)_0%,rgba(186,230,253,0)_44%)]"></div>
+          <div class="absolute -left-16 top-10 h-36 w-36 rounded-full bg-white/8 blur-3xl"></div>
+          <div class="absolute right-8 top-6 h-48 w-48 rounded-full bg-[#c7e6ff]/10 blur-3xl"></div>
+          <div class="absolute inset-x-0 bottom-0 h-20 bg-linear-to-t from-black/25 to-transparent"></div>
+          <div
+            class="pointer-events-none absolute right-2 top-2 z-10 flex max-w-[90%] flex-wrap items-center justify-end gap-1.5 opacity-100 transition duration-200 sm:right-3 sm:top-3 sm:max-w-none sm:gap-2 sm:opacity-0 sm:group-hover/cover:opacity-100 sm:group-focus-within/cover:opacity-100"
+          >
+            <button
+              data-modal-target="default-modal"
+              data-modal-toggle="default-modal"
+              type="button"
+              [ngClass]="!myProfile().cover ? 'hidden' : 'inline-flex'"
+              class="pointer-events-auto items-center gap-1 rounded-md bg-black/45 px-2 py-1 text-[11px] font-bold text-white backdrop-blur transition hover:bg-black/60 sm:gap-1.5 sm:px-3 sm:py-1.5 sm:text-xs"
+            >
+              <svg lucideExpand size="13"></svg>
+              View cover
+            </button>
+
+            <label class="pointer-events-auto flex cursor-pointer items-center gap-1 rounded-md bg-black/45 px-2 py-1 text-[11px] font-bold text-white backdrop-blur transition hover:bg-black/60 sm:gap-1.5 sm:px-3 sm:py-1.5 sm:text-xs">
+              <svg lucideCamera size="13"></svg>
+              {{ myProfile().cover ? ' Change' : 'Add' }} cover
+              <input #coverUploadInput (change)="changeImageInput($event, 'openChangeCoverModal')" accept="image/*" class="hidden" type="file" />
+            </label>
+
+            <button
+              type="button"
+              (click)="deleteCover()"
+              [disabled]="loading()"
+              [ngClass]="!myProfile().cover ? 'hidden' : 'inline-flex'"
+              class="pointer-events-auto items-center gap-1 rounded-md bg-black/45 px-2 py-1 text-[11px] font-bold text-white backdrop-blur transition hover:bg-black/60 disabled:cursor-not-allowed disabled:opacity-60 sm:gap-1.5 sm:px-3 sm:py-1.5 sm:text-xs"
+            >
+              <svg lucideTrash size="13"></svg>
+              {{ loading() ? 'Removing...' : 'Remove' }}
+            </button>
+          </div>
+        </div>
+        <div class="relative -mt-12 px-3 pb-5 sm:-mt-16 sm:px-8 sm:pb-6">
+          <div class="rounded-3xl border border-white/60 bg-white/92 p-5 backdrop-blur-xl sm:p-7">
+            <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+              <div class="min-w-0">
+                <div class="flex items-end gap-4">
+                  <div class="group/avatar relative shrink-0">
+                    <button (click)="openPhotoModal()" type="button" class="cursor-zoom-in rounded-full">
+                      <img [alt]="myProfile().name || ''" class="h-28 w-28 rounded-full border-4 border-white object-cover shadow-md ring-2 ring-[#dbeafe]" [src]="myProfile().photo || ''" />
+                    </button>
+                    <button
+                      (click)="openPhotoModal()"
+                      type="button"
+                      [ngClass]="!myProfile().photo ? 'hidden' : 'flex'"
+                      class="absolute bottom-1 left-1 h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-white text-[#1877f2] opacity-100 shadow-sm ring-1 ring-slate-200 transition duration-200 hover:bg-slate-50 sm:opacity-0 sm:group-hover/avatar:opacity-100 sm:group-focus-within/avatar:opacity-100"
+                      title="View profile photo"
+                      aria-label="View profile photo"
+                    >
+                      <svg lucideExpand size="16"></svg>
+                    </button>
+                    <label
+                      (change)="changeImageInput($event, 'openChangephotoModal')"
+                      [ngClass]="!myProfile().photo ? 'hidden' : 'flex'"
+                      class="absolute bottom-1 right-1 h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-[#1877f2] text-white opacity-100 shadow-sm transition duration-200 hover:bg-[#166fe5] sm:opacity-0 sm:group-hover/avatar:opacity-100 sm:group-focus-within/avatar:opacity-100"
+                    >
+                      <svg lucideCamera size="16"></svg>
+
+                      <input accept="image/*" class="hidden" type="file" />
+                    </label>
+                  </div>
+                  <div class="min-w-0 pb-1">
+                    <h2 class="truncate text-2xl font-black tracking-tight text-slate-900 sm:text-4xl">{{ myProfile().name }}</h2>
+                    <p class="mt-1 text-lg font-semibold text-slate-500 sm:text-xl">@{{ myProfile().username }}</p>
+                    <div class="mt-3 inline-flex items-center gap-2 rounded-full border border-[#d7e7ff] bg-[#eef6ff] px-3 py-1 text-xs font-bold text-[#0b57d0]">
+                      <svg lucideUsers size="13"></svg>
+                      Route Posts member
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="grid w-full grid-cols-3 gap-2 lg:w-130">
+                <div class="rounded-2xl border border-slate-200 bg-white px-3 py-3 text-center sm:px-4 sm:py-4">
+                  <p class="text-[11px] font-bold uppercase tracking-wide text-slate-500 sm:text-xs">Followers</p>
+                  <p class="mt-1 text-2xl font-black text-slate-900 sm:text-3xl">{{ myProfile().followersCount }}</p>
+                </div>
+                <div class="rounded-2xl border border-slate-200 bg-white px-3 py-3 text-center sm:px-4 sm:py-4">
+                  <p class="text-[11px] font-bold uppercase tracking-wide text-slate-500 sm:text-xs">Following</p>
+                  <p class="mt-1 text-2xl font-black text-slate-900 sm:text-3xl">{{ myProfile().followingCount }}</p>
+                </div>
+                <div class="rounded-2xl border border-slate-200 bg-white px-3 py-3 text-center sm:px-4 sm:py-4">
+                  <p class="text-[11px] font-bold uppercase tracking-wide text-slate-500 sm:text-xs">Bookmarks</p>
+                  <p class="mt-1 text-2xl font-black text-slate-900 sm:text-3xl">{{ myProfile().bookmarksCount }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="mt-5 grid gap-4 lg:grid-cols-[1.3fr_.7fr]">
+              <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <h3 class="text-sm font-extrabold text-slate-800">About</h3>
+                <div class="mt-3 space-y-2 text-sm text-slate-600">
+                  <p class="flex items-center gap-2">
+                    <svg class="text-slate-500" lucideMail size="15"></svg>
+                    {{ myProfile().email }}
+                  </p>
+                  <p class="flex items-center gap-2">
+                    <svg class="text-slate-500" lucideUsers size="15"></svg>
+                    Active on Route Posts
+                  </p>
+                </div>
+              </div>
+              <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+                <div class="rounded-2xl border border-[#dbeafe] bg-[#f6faff] px-4 py-3">
+                  <p class="text-xs font-bold uppercase tracking-wide text-[#1f4f96]">My posts</p>
+                  <p class="mt-1 text-2xl font-black text-slate-900">{{ myPostTotalCount() }}</p>
+                </div>
+                <div class="rounded-2xl border border-[#dbeafe] bg-[#f6faff] px-4 py-3">
+                  <p class="text-xs font-bold uppercase tracking-wide text-[#1f4f96]">Saved posts</p>
+                  <p class="mt-1 text-2xl font-black text-slate-900">{{ bookMarkPostTotalCount() }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!--! Section 2 === buttons my posts and saved to views posts  -->
+
+      <section class="space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+          <div class="grid w-full grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1.5 sm:inline-flex sm:w-auto sm:gap-0">
+            <button
+              (click)="changeActiveTab(ProfileTabsEnum.MyPost)"
+              [ngClass]="activeTab() === ProfileTabsEnum.MyPost ? 'bg-white text-[#1877f2] shadow-sm' : 'text-slate-600 hover:text-slate-900'"
+              class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-bold transition"
+            >
+              <svg class="text-slate-500" lucideFileText size="15"></svg>
+              My Posts
+            </button>
+
+            <button
+              (click)="changeActiveTab(ProfileTabsEnum.Saved)"
+              [ngClass]="activeTab() === ProfileTabsEnum.Saved ? 'bg-white text-[#1877f2] shadow-sm' : 'text-slate-600 hover:text-slate-900'"
+              class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-bold transition"
+            >
+              <svg class="text-slate-500" lucideBookmark size="15"></svg>
+              Saved
+            </button>
+          </div>
+          <span class="rounded-full bg-[#e7f3ff] px-3 py-1 text-xs font-bold text-[#1877f2]">{{ activeTab() === ProfileTabsEnum.Saved ? bookmarkPosts().length : myPosts().length }}</span>
+        </div>
+
+        <div #viewPort></div>
+        @defer (on viewport(viewPort)) {
+          <div class="space-y-3">
+            @if (activeTab() === ProfileTabsEnum.MyPost) {
+              @for (post of myPosts(); track post._id) {
+                <app-my-profile-post-view [post]="post" />
+              }
+            } @else {
+              @for (post of bookmarkPosts(); track post._id) {
+                <app-my-profile-post-view [post]="post" />
+              }
+            }
+          </div>
+        }
+      </section>
+    </div>
+  </main>
+</div>
+
+<!-- ----------------------------- -->
+<!-- ----------------------------- -->
+<!--!-------- Modals Views ---------->
+<!-- ----------------------------- -->
+<!-- ----------------------------- -->
+
+<!-- view cover modal -->
+<div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+  <div class="fixed inset-0 z-80 flex items-center justify-center bg-black/90 p-4 sm:p-8">
+    <button data-modal-hide="default-modal" type="button" class="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20">
+      <svg lucideX size="20"></svg>
+    </button>
+    <img [alt]="myProfile().name" class="max-h-full max-w-full object-contain" [src]="myProfile().cover" />
+  </div>
+</div>
+
+<!-- view photo modal -->
+<div #photoModal tabindex="-1" aria-hidden="true" id="photo-modal" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+  <div class="fixed inset-0 z-80 flex items-center justify-center bg-black/90 p-4 sm:p-8">
+    <button (click)="closePhotoModal()" type="button" class="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20">
+      <svg lucideX size="20"></svg>
+    </button>
+    <img [alt]="myProfile().name" class="max-h-full max-w-full object-contain" [src]="myProfile().photo" />
+  </div>
+</div>
+
+<div #changeCoverModal tabindex="-1" aria-hidden="true" id="change-cove-modal" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+  <div class="fixed inset-0 z-90 flex items-center justify-center bg-black/60 p-4">
+    <div class="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-5 shadow-xl">
+      <h3 class="text-lg font-extrabold text-slate-900">Cover post privacy</h3>
+      <p class="mt-1 text-sm text-slate-500">Choose who can see the post generated for your new cover photo.</p>
+      <div class="mt-4">
+        <select [formControl]="privacy" class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 outline-none focus:border-[#1877f2]">
+          <option value="public">Public</option>
+          <option value="following">Followers</option>
+          <option value="only_me">Only me</option>
+        </select>
+      </div>
+      <div class="mt-5 flex items-center justify-end gap-2">
+        <button [disabled]="loading()" (click)="closeChangeCoverModal()" type="button" class="inline-flex items-center rounded-md border border-slate-300 px-4 py-2 text-sm font-bold text-slate-600 transition hover:bg-slate-50">Cancel</button>
+        <button
+          [disabled]="loading()"
+          (click)="submitNewCover($event)"
+          type="button"
+          class="inline-flex items-center rounded-md bg-[#1877f2] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#166fe5] disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {{ !loading() ? 'Save cover' : 'Saving...' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- --------------------->
+<!-- change photo modal -->
+<!-- --------------------->
+<app-reusable-flowbite-model #changePhotoModal id="change-photo-modal">
+  <div class="w-full max-w-140 rounded-2xl border border-slate-200 bg-white p-4 shadow-xl sm:p-5">
+    <div class="mb-3">
+      <h3 class="text-lg font-extrabold text-slate-900">Adjust profile photo</h3>
+      <p class="text-sm text-slate-500">Drag to reposition and use zoom for perfect framing.</p>
+    </div>
+    <div class="mx-auto w-full max-w-85 overflow-x-auto pb-1">
+      <div class="relative h-80 w-[320px] touch-none overflow-hidden rounded-2xl bg-slate-100 ring-1 ring-slate-200">
+        <img
+          alt="Crop preview"
+          draggable="false"
+          class="pointer-events-none absolute left-1/2 top-1/2 select-none"
+          [src]="imageUrl()"
+          style="width: 480px; height: 720px; max-width: none; max-height: none; transform: translate(calc(-50% + 0px), calc(-50% + 0px)) scale(0.666667); transform-origin: center center"
+        />
+      </div>
+    </div>
+    <div class="mt-4 space-y-2">
+      <div class="flex items-center justify-between text-xs font-bold text-slate-500">
+        <span>Zoom</span><span>{{ zoomValue() }}x</span>
+      </div>
+      <input [disabled]="loading()" #zoomOutInput (input)="cropPreview(zoomOutInput)" min="1" max="3" step="0.01" class="h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200 accent-[#1877f2]" type="range" value="1" />
+    </div>
+    <div class="mt-4">
+      <p class="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">Post privacy</p>
+      <select [formControl]="privacy" class="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 outline-none focus:border-[#1877f2]">
+        <option value="public">Public</option>
+        <option value="following">Followers</option>
+        <option value="only_me">Only me</option>
+      </select>
+    </div>
+    <div class="mt-5 flex items-center justify-end gap-2">
+      <button [disabled]="loading()" (click)="changePhotoModal.close()" type="button" class="inline-flex items-center rounded-md border border-slate-300 px-4 py-2 text-sm font-bold text-slate-600 transition hover:bg-slate-50">Cancel</button>
+      <button
+        [disabled]="loading()"
+        (click)="submitNewPhoto($event)"
+        type="button"
+        class="inline-flex items-center rounded-md bg-[#1877f2] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#166fe5] disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        {{ loading() ? 'Saving...' : 'Save photo' }}
+      </button>
+    </div>
+  </div>
+</app-reusable-flowbite-model>
