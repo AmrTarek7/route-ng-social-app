@@ -107,11 +107,13 @@
     </div>
     @if (registerForm.get('rePassword')?.invalid && registerForm.get('rePassword')?.touched && registerForm.get('rePassword')?.dirty) {
       @if (registerForm.get('rePassword')?.hasError('required')) {
-        <p class="mt-1 text-xs font-semibold text-rose-600">Repassword is required.</p>
+        <p class="mt-1 text-xs font-semibold text-rose-600">- Repassword is required.</p>
       } @else if (registerForm.get('rePassword')?.hasError('pattern')) {
-        <p class="mt-1 text-xs font-semibold text-rose-600">Repassword must be at least 8 characters and contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)..</p>
-      } @else {
-        <p class="mt-1 text-xs font-semibold text-rose-600">Passwords do not match.</p>
+        <p class="mt-1 text-xs font-semibold text-rose-600">- Repassword must be at least 8 characters and contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)..</p>
+      }
+
+      @if (registerForm.get('rePassword')?.hasError('passwordsDoNotMatch')) {
+        <p class="mt-1 text-xs font-semibold text-rose-600">- Passwords do not match.</p>
       }
     }
   </div>

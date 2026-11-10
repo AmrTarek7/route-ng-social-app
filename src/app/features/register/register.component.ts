@@ -44,11 +44,14 @@ export class RegisterComponent {
   validatePasswordsMatch(formGroup: AbstractControl) {
     const password = formGroup.get('password');
     const rePassword = formGroup.get('rePassword');
+    const repasswordErrors = { ...rePassword?.errors };
+
     if (password?.value !== rePassword?.value) {
-      rePassword?.setErrors({ passwordsDoNotMatch: true });
+      rePassword?.setErrors({ ...repasswordErrors, passwordsDoNotMatch: true });
       return { passwordsDoNotMatch: true };
     } else {
-      rePassword?.setErrors(null);
+      delete repasswordErrors['passwordsDoNotMatch'];
+      rePassword?.setErrors(Object.keys(repasswordErrors).length ? repasswordErrors : null);
       return null;
     }
   }
