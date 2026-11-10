@@ -41,10 +41,10 @@
         <span class="hidden sm:inline">Photo/video</span>
         <input #fileUploadInput (change)="changeImageInput($event)" accept="image/*" class="hidden" type="file" />
       </label>
-      <button type="button" class="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100">
+      <!-- <button type="button" class="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100">
         <svg lucideFaceSlightlySmiling class="text-amber-600" title="Home" [size]="20"></svg>
         <span class="hidden sm:inline">Feeling/activity</span>
-      </button>
+      </button> -->
     </div>
     <div class="flex items-center gap-3">
       <button [disabled]="(!saveFile() && !content.value) || posting()" class="flex items-center gap-2 rounded-md bg-[#1877f2] px-5 py-2 text-sm font-bold text-white shadow-sm transition-colors hover:bg-[#166fe5] disabled:opacity-60">
