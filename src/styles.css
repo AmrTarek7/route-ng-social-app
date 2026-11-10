@@ -6,6 +6,8 @@
 @import 'flowbite/src/themes/default';
 
 @import 'tailwindcss';
+/* regular style toast */
+@import 'ngx-toastr/toastr';
 @plugin "flowbite/plugin";
 
 @source "../node_modules/flowbite";

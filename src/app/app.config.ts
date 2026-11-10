@@ -3,6 +3,8 @@ import { provideRouter, withComponentInputBinding, withHashLocation, withInMemor
 import { routes } from './app.routes';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { headersInterceptor } from './core/interceptors/headers.interceptor';
+import { provideToastr } from 'ngx-toastr';
+import { handelErrorInterceptor } from './core/interceptors/handel-error.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -15,6 +17,7 @@ export const appConfig: ApplicationConfig = {
       }),
       withComponentInputBinding(),
     ),
-    provideHttpClient(withFetch(), withInterceptors([headersInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([headersInterceptor, handelErrorInterceptor])),
+    provideToastr(),
   ],
 };
