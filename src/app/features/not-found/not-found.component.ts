@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-not-found',
@@ -10,6 +10,9 @@ import { RouterLink } from '@angular/router';
 })
 export class NotFoundComponent {
   private readonly _location = inject(Location);
+  private readonly _router = inject(Router);
+
+  readonly currentPath = this._router.url;
 
   goBack(): void {
     this._location.back();
