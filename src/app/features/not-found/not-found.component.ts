@@ -13,6 +13,7 @@ export class NotFoundComponent {
   private readonly _router = inject(Router);
 
   readonly currentPath = this._router.url;
+  readonly isLoggedIn = Boolean(localStorage.getItem('userToken'));
 
   goBack(): void {
     this._location.back();
