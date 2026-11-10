@@ -1,42 +1,69 @@
 import { Routes } from '@angular/router';
-import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
-import { RegisterComponent } from './features/register/register.component';
-import { LoginComponent } from './features/login/login.component';
-import { ChangePasswordComponent } from './features/change-password/change-password.component';
-import { ForgetPasswordComponent } from './features/forget-password/forget-password.component';
-import { UserLayoutComponent } from './layouts/user-layout/user-layout.component';
-import { FeedComponent } from './features/feed/feed.component';
-import { ProfileComponent } from './features/profile/profile.component';
-import { NotFoundComponent } from './features/not-found/not-found.component';
-import { NotificationsComponent } from './features/notifications/notifications.component';
-import { PostDetailsComponent } from './features/post-details/post-details.component';
-import { SuggestionsComponent } from './features/suggestions/suggestions.component';
 
 export const routes: Routes = [
   {
     path: '',
-    component: AuthLayoutComponent,
+    loadComponent: () => import('./layouts/auth-layout/auth-layout.component').then((m) => m.AuthLayoutComponent),
     children: [
       { path: '', redirectTo: 'register', pathMatch: 'full' },
-      { path: 'register', component: RegisterComponent, title: 'register' },
-      { path: 'login', component: LoginComponent, title: 'login' },
-      { path: 'forget-password', component: ForgetPasswordComponent, title: 'forget-password' },
+      {
+        path: 'register',
+        loadComponent: () => import('./features/register/register.component').then((m) => m.RegisterComponent),
+        title: 'register',
+      },
+      {
+        path: 'login',
+        loadComponent: () => import('./features/login/login.component').then((m) => m.LoginComponent),
+        title: 'login',
+      },
+      {
+        path: 'forget-password',
+        loadComponent: () => import('./features/forget-password/forget-password.component').then((m) => m.ForgetPasswordComponent),
+        title: 'forget-password',
+      },
     ],
   },
 
   {
     path: '',
-    component: UserLayoutComponent,
+    loadComponent: () => import('./layouts/user-layout/user-layout.component').then((m) => m.UserLayoutComponent),
     children: [
       // { path: '', redirectTo: 'feed', pathMatch: 'full' },
-      { path: 'feed', component: FeedComponent, title: 'feed' },
-      { path: 'profile', component: ProfileComponent, title: 'profile' },
-      { path: 'notifications', component: NotificationsComponent, title: 'Notification' },
-      { path: 'settings', component: ChangePasswordComponent, title: 'settings' },
-      { path: 'suggestions', component: SuggestionsComponent, title: 'suggestions' },
-      { path: 'post/:id', component: PostDetailsComponent },
+      {
+        path: 'feed',
+        loadComponent: () => import('./features/feed/feed.component').then((m) => m.FeedComponent),
+        title: 'feed',
+      },
+      {
+        path: 'profile',
+        loadComponent: () => import('./features/profile/profile.component').then((m) => m.ProfileComponent),
+        title: 'profile',
+      },
+      {
+        path: 'notifications',
+        loadComponent: () => import('./features/notifications/notifications.component').then((m) => m.NotificationsComponent),
+        title: 'Notification',
+      },
+      {
+        path: 'settings',
+        loadComponent: () => import('./features/change-password/change-password.component').then((m) => m.ChangePasswordComponent),
+        title: 'settings',
+      },
+      {
+        path: 'suggestions',
+        loadComponent: () => import('./features/suggestions/suggestions.component').then((m) => m.SuggestionsComponent),
+        title: 'suggestions',
+      },
+      {
+        path: 'post/:id',
+        loadComponent: () => import('./features/post-details/post-details.component').then((m) => m.PostDetailsComponent),
+      },
     ],
   },
 
-  { path: '**', component: NotFoundComponent, title: 'not found 404 :(' },
+  {
+    path: '**',
+    loadComponent: () => import('./features/not-found/not-found.component').then((m) => m.NotFoundComponent),
+    title: 'not found 404 :(',
+  },
 ];
