@@ -12,10 +12,7 @@ import { UserService } from './core/services/user.service';
 export class App implements OnInit {
   protected readonly title = signal('social-app');
 
-  _userService = inject(UserService);
-
   ngOnInit(): void {
     initFlowbite();
-    this._userService.getUserProfile();
   }
 }

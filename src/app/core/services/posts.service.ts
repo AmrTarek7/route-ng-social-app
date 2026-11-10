@@ -26,8 +26,8 @@ export class PostsService {
     });
   }
 
-  getFeedPosts(limit: number = 20, page: number = 1): Observable<any> {
-    return this._http.get(`${this.baseURL}/feed?only=following&limit=${limit}&page=${page}`, {
+  getFeedPosts(limit: number = 20, page: number = 1, onlyValue: 'following' | 'me' | 'all' = 'following'): Observable<any> {
+    return this._http.get(`${this.baseURL}/feed?only=${onlyValue}&limit=${limit}&page=${page}`, {
       headers: this.getAuthHeaders(),
     });
   }
