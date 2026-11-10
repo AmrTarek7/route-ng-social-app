@@ -10,69 +10,45 @@ import { MyProfile } from '../models/my-profile.interface';
 })
 export class UserService {
   followersSuggestion = signal<FollowerIF[]>([]);
-
-  private baseURL = `${environment.baseUrl}/users`;
-  // private authType = environment.authType;
-
   myProfile = signal<MyProfile>({} as MyProfile);
 
-  private getAuthHeaders(): HttpHeaders {
-    const token = localStorage.getItem('userToken');
-
-    return new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-    });
-  }
-
+  private baseURL = `${environment.baseUrl}/users`;
   private _http = inject(HttpClient);
 
   getFollowSuggestions(limit: number = 20, page: number = 1): Observable<any> {
     return this._http.get(`${this.baseURL}/suggestions`, {
-      headers: this.getAuthHeaders(),
       params: { limit, page },
     });
   }
 
   followUser(userId: string): Observable<any> {
-    return this._http.put(`${this.baseURL}/${userId}/follow`, '', {
-      headers: this.getAuthHeaders(),
-    });
+    return this._http.put(`${this.baseURL}/${userId}/follow`, '');
   }
 
   userSearch(q: string | null, limit: number = 20, page: number = 1): Observable<any> {
     return this._http.get(`${this.baseURL}/search`, {
       params: { q: q ?? '', page, limit },
-      headers: this.getAuthHeaders(),
     });
   }
 
   private getLoggedUserProfile(): Observable<any> {
-    return this._http.get(`${this.baseURL}/profile-data`, {
-      headers: this.getAuthHeaders(),
-    });
+    return this._http.get(`${this.baseURL}/profile-data`);
   }
 
   uploadCover(formData: FormData): Observable<any> {
-    return this._http.put(`${this.baseURL}/upload-cover`, formData, {
-      headers: this.getAuthHeaders(),
-    });
+    return this._http.put(`${this.baseURL}/upload-cover`, formData);
   }
 
   deleteCover(): Observable<any> {
-    return this._http.delete(`${this.baseURL}/cover`, {
-      headers: this.getAuthHeaders(),
-    });
+    return this._http.delete(`${this.baseURL}/cover`);
   }
 
   uploadPhoto(formData: FormData): Observable<any> {
-    return this._http.put(`${this.baseURL}/upload-photo`, formData, {
-      headers: this.getAuthHeaders(),
-    });
+    return this._http.put(`${this.baseURL}/upload-photo`, formData);
   }
 
   getMyBookmarkPosts(page: number = 1, limit: number = 20): Observable<any> {
     return this._http.get(`${this.baseURL}/bookmarks`, {
-      headers: this.getAuthHeaders(),
       params: {
         page,
         limit,
@@ -92,8 +68,6 @@ export class UserService {
   }
 
   getProfileAnyUser(userId: string): Observable<any> {
-    return this._http.get(`${this.baseURL}/${{ userId }}/profile`, {
-      headers: this.getAuthHeaders(),
-    });
+    return this._http.get(`${this.baseURL}/${{ userId }}/profile`);
   }
 }
