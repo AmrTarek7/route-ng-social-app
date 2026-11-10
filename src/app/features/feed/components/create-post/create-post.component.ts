@@ -23,6 +23,8 @@ export class CreatePostComponent {
 
   _postService = inject(PostsService);
 
+  posting = signal(false);
+
   changeImageInput(e: Event): void {
     const input = e.target as HTMLInputElement;
 
@@ -65,7 +67,7 @@ export class CreatePostComponent {
     }
 
     // console.log('formData', formData);
-
+    this.posting.set(true);
     this._postService.createPost(formData).subscribe({
       next: () => {
         this.removeImage();
@@ -73,6 +75,7 @@ export class CreatePostComponent {
         this.privacy.setValue('public');
         //Refresh parent postsList to get the new post
         this.refreshPostsList.emit();
+        this.posting.set(false);
       },
       error: (err) => {
         console.log(err);
