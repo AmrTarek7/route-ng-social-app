@@ -5,6 +5,7 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import { headersInterceptor } from './core/interceptors/headers.interceptor';
 import { provideToastr } from 'ngx-toastr';
 import { handelErrorInterceptor } from './core/interceptors/handel-error.interceptor';
+import { LoadingInterceptor } from './core/interceptors/loading.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,7 +18,7 @@ export const appConfig: ApplicationConfig = {
       }),
       withComponentInputBinding(),
     ),
-    provideHttpClient(withFetch(), withInterceptors([headersInterceptor, handelErrorInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([headersInterceptor, handelErrorInterceptor, LoadingInterceptor])),
     provideToastr(),
   ],
 };
