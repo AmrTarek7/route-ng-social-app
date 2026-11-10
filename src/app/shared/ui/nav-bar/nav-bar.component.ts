@@ -1,6 +1,7 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { User } from '../../../core/models/user.interface';
+import { AuthService } from '../../../core/auth/service/auth.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -10,6 +11,8 @@ import { User } from '../../../core/models/user.interface';
 })
 export class NavBarComponent implements OnInit {
   user = signal<User | null>(null);
+
+  _authService = inject(AuthService);
 
   ngOnInit(): void {
     const userData = localStorage.getItem('routeUserInfo');
@@ -25,5 +28,10 @@ export class NavBarComponent implements OnInit {
     } else {
       element.classList.add('hidden');
     }
+  }
+
+  logoutUser(element: HTMLElement | HTMLInputElement): void {
+    this.toggleUserMenu(element);
+    this._authService.logout();
   }
 }

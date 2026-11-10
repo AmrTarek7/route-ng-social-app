@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -10,6 +11,7 @@ export class AuthService {
   private baseURL = environment.baseUrl;
 
   private _http = inject(HttpClient);
+  private _router = inject(Router);
 
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('userToken');
@@ -43,5 +45,11 @@ export class AuthService {
       icon.classList.add('fa-eye');
       icon.classList.remove('fa-eye-slash');
     }
+  }
+
+  logout(): void {
+    localStorage.removeItem('userToken');
+    localStorage.removeItem('routeUserInfo');
+    this._router.navigate(['/login']);
   }
 }
