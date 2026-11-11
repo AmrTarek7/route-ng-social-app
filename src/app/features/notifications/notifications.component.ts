@@ -19,14 +19,12 @@ export class NotificationsComponent {
 
   unreadNotifications = signal<NotificationIF[]>([]);
 
-  unreadCount = signal<number>(0);
-
-  readNotificationBtnText = computed(() => (this.unreadCount() > 0 ? 'Mark all as read' : 'No unread notifications'));
-  readNotificationBtnDisabled = computed(() => this.unreadCount() === 0);
+  readNotificationBtnText = computed(() => (this._notificationsService.notifactionCounts() > 0 ? 'Mark all as read' : 'No unread notifications'));
+  readNotificationBtnDisabled = computed(() => this._notificationsService.notifactionCounts() === 0);
 
   notificationTab = signal<'all' | 'unread'>('all');
 
-  private readonly _notificationsService = inject(NotificationsService);
+  readonly _notificationsService = inject(NotificationsService);
   private destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
@@ -35,7 +33,6 @@ export class NotificationsComponent {
       .pipe(take(20), takeUntilDestroyed(this.destroyRef))
       .subscribe((time) => {
         this.getAllNotifications();
-        this.getNotificationsCount();
       });
   }
 
@@ -51,23 +48,13 @@ export class NotificationsComponent {
     });
   }
 
-  getNotificationsCount(): void {
-    this._notificationsService.getUnreadNotificationsCount().subscribe({
-      next: (res) => {
-        console.log(res);
-        this.unreadCount.set(res.data.unreadCount);
-      },
-      error: (e) => console.log(e),
-    });
-  }
-
   markAllNotificationsAsRead(): void {
-    if (this.unreadCount() === 0) return;
+    if (this._notificationsService.notifactionCounts() === 0) return;
 
     this._notificationsService.markAllAsRead().subscribe({
       next: (res) => {
         console.log(res);
-        this.unreadCount.set(0);
+        this._notificationsService.notifactionCounts.set(0);
         this.notifications.update((notifications) => notifications.map((notification) => ({ ...notification, isRead: true })));
         this.unreadNotifications.set([]);
       },
@@ -82,6 +69,6 @@ export class NotificationsComponent {
   updateUnreadNotification(notification: NotificationIF): void {
     this.unreadNotifications.update((unreadNotifications) => unreadNotifications.filter((unreadNotification) => unreadNotification._id !== notification._id));
     this.notifications.update((notifications) => notifications.map((item) => (item._id === notification._id ? { ...item, isRead: true } : item)));
-    this.unreadCount.update((unreadCount) => unreadCount - 1);
+    this._notificationsService.notifactionCounts.update((unreadCount) => unreadCount - 1);
   }
 }
