@@ -12,6 +12,6 @@ import { UserService } from '../../core/services/user.service';
 export class UserLayoutComponent implements OnInit {
   _userService = inject(UserService);
   ngOnInit(): void {
-    this._userService.getMyProfile();
+    this._userService.getMyProfileInfo();
   }
 }

@@ -3,10 +3,10 @@
   <div class="p-4">
     <div class="flex items-center gap-3">
       <!-- User Avatar -->
-      <a class="shrink-0" [routerLink]="['/profile']"> <img [src]="localPost().user.photo || defaultAvatar" [alt]="localPost().user.name || 'User'" class="h-11 w-11 rounded-full object-cover" /> </a>
+      <a class="shrink-0 cursor-pointer" (click)="routeToUserProfile()"> <img [src]="localPost().user.photo || defaultAvatar" [alt]="localPost().user.name || 'User'" class="h-11 w-11 rounded-full object-cover" /> </a>
       <div class="min-w-0 flex-1">
         <!-- User Display Name -->
-        <a class="truncate text-sm font-bold text-foreground hover:underline" [routerLink]="['/profile']"> {{ localPost().user.name || 'Anonymous' }}</a>
+        <a class="truncate text-sm font-bold text-foreground hover:underline cursor-pointer" (click)="routeToUserProfile()"> {{ localPost().user.name || 'Anonymous' }}</a>
         <div class="flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
           <!-- Post Date & Privacy Icon & UserName -->
           @{{ localPost().user.username }} ·

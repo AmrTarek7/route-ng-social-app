@@ -69,7 +69,7 @@ export class ProfileComponent implements AfterViewInit {
   _modalFlowbiteService = inject(ModalFlowbiteService);
 
   ngOnInit(): void {
-    this._userService.getMyProfile();
+    this._userService.getMyProfileInfo();
     this.getMyPosts();
     this.getBookMarkPosts();
   }
@@ -109,7 +109,7 @@ export class ProfileComponent implements AfterViewInit {
     this._userService.deleteCover().subscribe({
       next: () => {
         this.loading.set(false);
-        this._userService.getMyProfile();
+        this._userService.getMyProfileInfo();
       },
     });
   }
@@ -170,7 +170,7 @@ export class ProfileComponent implements AfterViewInit {
         this.loading.set(false);
         this.closeChangeCoverModal();
         this.privacy.enable();
-        this._userService.getMyProfile();
+        this._userService.getMyProfileInfo();
       },
       error: (err) => {
         console.log(err);
@@ -196,7 +196,7 @@ export class ProfileComponent implements AfterViewInit {
         this.loading.set(false);
         this.changePhotoModal.close();
         this.privacy.enable();
-        this._userService.getMyProfile();
+        this._userService.getMyProfileInfo();
       },
       error: (err) => {
         console.log(err);

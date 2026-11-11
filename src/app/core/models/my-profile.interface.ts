@@ -7,7 +7,7 @@ export interface MyProfile {
   gender: string;
   photo: string;
   cover: string;
-  bookmarks: string[];
+  bookmarks?: string[];
   followers: string[];
   following: string[];
   createdAt: string;

@@ -44,6 +44,11 @@ export const routes: Routes = [
         title: 'profile',
       },
       {
+        path: 'profile/:id',
+        loadComponent: () => import('./features/global-profile/global-profile.component').then((m) => m.GlobalProfileComponent),
+        title: 'profile',
+      },
+      {
         path: 'notifications',
         loadComponent: () => import('./features/notifications/notifications.component').then((m) => m.NotificationsComponent),
         title: 'Notification',

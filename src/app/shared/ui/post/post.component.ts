@@ -7,7 +7,7 @@ import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { LucideBookmark, LucideChevronDown, LucideEarth, LucideEllipsis, LucideLock, LucideMessageCircle, LucideRepeat2, LucideShare2, LucideThumbsUp, LucideUsers } from '@lucide/angular';
 import { SharedPostComponent } from './components/shared-post/shared-post.component';
 import { PostPrivacy } from '../../../core/enums/post-privacy.enum';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { PostLikesComponent } from './components/post-likes/post-likes.component';
 import { ModalComponent } from '../modal/modal.component';
 import { SharePostModalComponent } from './components/share-post-modal/share-post-modal.component';
@@ -42,6 +42,7 @@ import { PostCommentsComponent } from './components/post-comments/post-comments.
 export class PostComponent {
   //
   _postsService = inject(PostsService);
+  _router = inject(Router);
 
   myId = signal<string>(JSON.parse(localStorage.getItem('routeUserInfo') as string)._id);
   userLoginData = signal<string>(JSON.parse(localStorage.getItem('routeUserInfo') as string));
@@ -90,6 +91,15 @@ export class PostComponent {
 
   refreshFeed(): void {
     this.refreshPostsList.emit();
+  }
+
+  routeToUserProfile(): void {
+    const userId = this.localPost().user._id;
+    if (this.myId() === userId) {
+      this._router.navigate(['/profile']);
+      return;
+    }
+    this._router.navigate(['/profile', userId]);
   }
 
   // modal Functions

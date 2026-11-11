@@ -49,14 +49,21 @@ export class UserService {
 
   getMyBookmarkPosts(page: number = 1, limit: number = 20): Observable<any> {
     return this._http.get(`${this.baseURL}/bookmarks`, {
-      params: {
-        page,
-        limit,
-      },
+      params: { page, limit },
     });
   }
 
-  getMyProfile(): void {
+  getUserPosts(userId: string, page: number = 1, limit: number = 20): Observable<any> {
+    return this._http.get(`${this.baseURL}/${userId}/posts`, {
+      params: { page, limit },
+    });
+  }
+
+  getAnyUserProfile(userId: string): Observable<any> {
+    return this._http.get(`${this.baseURL}/${userId}/profile`);
+  }
+
+  getMyProfileInfo(): void {
     this.getLoggedUserProfile().subscribe({
       next: (res) => {
         this.myProfile.set(res.data.user);
@@ -65,9 +72,5 @@ export class UserService {
         this.myProfile.set({} as MyProfile);
       },
     });
-  }
-
-  getProfileAnyUser(userId: string): Observable<any> {
-    return this._http.get(`${this.baseURL}/${{ userId }}/profile`);
   }
 }
