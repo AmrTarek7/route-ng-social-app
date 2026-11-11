@@ -2,7 +2,7 @@
   <div class="min-w-0">
     <div class="grid gap-4 xl:grid-cols-[240px_minmax(0,1fr)_300px]">
       <!-- feed Left Sidebar  (Side Navigation) -->
-      <app-menu-nav-aside />
+      <app-menu-nav-aside (getPost)="getPosts($event)" />
 
       <section class="space-y-4">
         <!-- Create Post Section -->

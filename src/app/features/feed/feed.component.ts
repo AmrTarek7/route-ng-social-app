@@ -7,6 +7,8 @@ import { SkeletonPostComponent } from '../../shared/ui/skeleton-post/skeleton-po
 import { CreatePostComponent } from './components/create-post/create-post.component';
 import { SuggestedFollowersAsideComponent } from './components/suggested-followers-aside/suggested-followers-aside.component';
 import { MenuNavAsideComponent } from './components/menu-nav-aside/menu-nav-aside.component';
+import { UserService } from '../../core/services/user.service';
+import { Meta } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-feed',
@@ -16,27 +18,50 @@ import { MenuNavAsideComponent } from './components/menu-nav-aside/menu-nav-asid
 })
 export class FeedComponent implements OnInit {
   _postService = inject(PostsService);
+  _usersService = inject(UserService);
 
   postsList = signal<PostModel[]>([]);
   isLoading = signal<boolean>(true);
   readonly userData = signal<User>(JSON.parse(localStorage.getItem('routeUserInfo') as string));
 
+  postMeta = signal<Meta>({} as Meta);
+
   ngOnInit(): void {
     this.getFeedPosts();
   }
 
-  getFeedPosts(): void {
+  getFeedPosts(type: 'following' | 'me' | 'all' = 'following'): void {
     this.isLoading.set(true);
-    this._postService.getFeedPosts().subscribe({
+    this._postService.getFeedPosts(50, 1, type).subscribe({
       next: (res) => {
-        console.log('Posts API Response:', res);
+        // console.log('Posts API Response:', res);
         this.postsList.set(res.data?.posts);
         this.isLoading.set(false);
       },
       error: (err) => {
-        console.error('Error fetching posts:', err);
+        // console.error('Error fetching posts:', err);
         this.isLoading.set(false);
       },
     });
+  }
+
+  getSavedPosts(): void {
+    this.isLoading.set(true);
+    this._usersService.getMyBookmarkPosts(1, 50).subscribe({
+      next: (res) => {
+        this.postsList.set(res.data?.bookmarks);
+        this.postMeta.set(res.meta);
+        this.isLoading.set(false);
+      },
+    });
+  }
+
+  getPosts(type: any) {
+    if (type === 'saved') {
+      this.getSavedPosts();
+      return;
+    }
+
+    this.getFeedPosts(type);
   }
 }
