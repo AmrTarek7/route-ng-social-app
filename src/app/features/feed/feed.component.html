@@ -15,9 +15,9 @@
 
         <!-- DYNAMIC POSTS LIST -->
         @for (post of postsList(); track post._id) {
-          <section class="flex flex-col gap-1.5">
-            <app-post [post]="post" (refreshPostsList)="getFeedPosts()"></app-post>
-          </section>
+          <!-- <section class="flex flex-col gap-1.5"> -->
+          <app-post [post]="post" (refreshPostsList)="getFeedPosts()"></app-post>
+          <!-- </section> -->
         } @empty {
           @if (!isLoading()) {
             <!-- EMPTY FEED STATE -->
@@ -28,6 +28,19 @@
               <h3 class="text-base font-semibold text-gray-900">No posts found</h3>
               <p class="text-sm text-gray-500 mt-1">There are no posts to display in your feed right now.</p>
             </div>
+          }
+        }
+
+        @if (!isLoading() && postsList().length > 0) {
+          @if (hasNextPage()) {
+            <div #loadMoreTrigger class="flex min-h-10 items-center justify-center">
+              <span class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-500 shadow-xs">
+                <svg lucideLoaderCircle [size]="14" class="animate-spin"></svg>
+                Loading more posts...
+              </span>
+            </div>
+          } @else {
+            <div class="flex min-h-10 items-center justify-center"><span class="text-xs font-semibold text-slate-400">You reached the end</span></div>
           }
         }
       </section>
