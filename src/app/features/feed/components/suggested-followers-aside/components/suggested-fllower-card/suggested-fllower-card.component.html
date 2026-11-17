@@ -1,6 +1,6 @@
 <div class="rounded-xl border border-slate-200 p-2.5">
   <div class="flex items-center justify-between gap-2">
-    <button type="button" class="flex min-w-0 items-center gap-2 rounded-md px-1 py-1 text-left transition hover:bg-slate-50">
+    <button [routerLink]="['/profile', follower()._id]" type="button" class="flex min-w-0 items-center gap-2 rounded-md px-1 py-1 text-left transition hover:bg-slate-50">
       <img [alt]="follower().username" class="h-10 w-10 rounded-full object-cover" [src]="follower().photo" />
       <div class="min-w-0">
         <p class="truncate text-sm font-bold text-slate-900 hover:underline">{{ follower().name }}</p>

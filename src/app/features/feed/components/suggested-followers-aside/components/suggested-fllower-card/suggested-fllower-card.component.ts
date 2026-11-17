@@ -1,13 +1,14 @@
-import { Component, computed, inject, input, linkedSignal, output, signal } from '@angular/core';
+import { Component, inject, input, output, signal } from '@angular/core';
 import { LucideUserCheck, LucideUserPlus } from '@lucide/angular';
 import { FollowerIF } from '../../../../../../core/models/follower.interface';
 import { UserService } from '../../../../../../core/services/user.service';
 import { finalize } from 'rxjs';
 import { NgClass } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-suggested-fllower-card',
-  imports: [LucideUserPlus, NgClass, LucideUserCheck],
+  imports: [LucideUserPlus, NgClass, LucideUserCheck, RouterLink],
   templateUrl: './suggested-fllower-card.component.html',
   styleUrl: './suggested-fllower-card.component.css',
 })
